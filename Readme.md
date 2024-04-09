@@ -2,10 +2,7 @@
 ### git clone git@github.com:Nikolaev3Artem/meduzzen-internature.git
 ### cd meduzzen-internature
 # Create your own .env file using .env.example for example
-### python -m venv venv
-### pip install -r requirements.txt
-### cd app
-### python main.py
+### docker-compose up -d --buil
 
-## Testing app:
-### pytest
+# Testing:
+### docker-compose exec api pytest tests/
