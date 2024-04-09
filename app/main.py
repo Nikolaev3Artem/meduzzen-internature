@@ -1,9 +1,7 @@
-from typing import Union
 import uvicorn
 from fastapi import FastAPI
-import os
-from routers.healthcheck import router as health_check_router
-from core.config import settings
+from app.routers.healthcheck import router as health_check_router
+from app.core.config import settings
 
 app = FastAPI()
 
