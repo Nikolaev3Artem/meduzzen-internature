@@ -2,11 +2,12 @@ from typing import Union
 import uvicorn
 from fastapi import FastAPI
 import os
-from routers import healthcheck
+from routers.healthcheck import router as health_check_router
+from core.config import settings
 
 app = FastAPI()
 
-app.include_router(healthcheck.router)
+app.include_router(health_check_router)
 
 if __name__ == "__main__":
-    uvicorn.run('main:app', host=os.getenv('API_HOST'), port=int(os.getenv('API_PORT')), log_level="info", reload=os.getenv("DEBUG", 'False').lower() in ('true', '1', 't'))
+    uvicorn.run('main:app', host=settings.api_host, port=settings.api_port, log_level="info", reload=settings.debug)
