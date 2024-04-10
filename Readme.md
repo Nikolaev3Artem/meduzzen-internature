@@ -5,4 +5,4 @@
 ### docker-compose up -d --build
 
 # Testing:
-### docker-compose exec api pytest tests/
+### pytest tests/
