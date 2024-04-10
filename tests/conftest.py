@@ -6,4 +6,3 @@ from pytest import fixture
 def client_fixture():
     client = TestClient(app)
     yield client
-    app.dependency_overrides.clear()
