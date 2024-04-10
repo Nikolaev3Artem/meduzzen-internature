@@ -1,8 +1,13 @@
 import uvicorn
 from fastapi import FastAPI
+<<<<<<< HEAD
 from app.routers.healthcheck import router as health_check_router
 from app.core.config import settings
 from fastapi.middleware.cors import CORSMiddleware
+=======
+from routers.healthcheck import router as health_check_router
+from core.config import settings
+>>>>>>> BE-1-init-application
 
 app = FastAPI()
 
