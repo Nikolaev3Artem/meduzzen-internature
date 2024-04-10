@@ -1,6 +1,6 @@
 FROM python:3.11-alpine
 
-WORKDIR /app
+WORKDIR ./app
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -11,4 +11,4 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-CMD ["uvicorn", "app.main:app", "--reload", "--port", "80", "--host", "0.0.0.0"]
+CMD ["python", "./app/main.py"]

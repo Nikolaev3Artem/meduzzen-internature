@@ -6,6 +6,6 @@ class Settings(BaseSettings):
     debug: bool 
     origins: str
 
-    model_config = SettingsConfigDict(env_file='.env', _env_file_encoding='utf-8')
+    model_config = SettingsConfigDict(env_file='.env', _env_file_encoding='utf-8', extra='allow')
 
-settings = Settings(_env_file='.env', _env_file_encoding='utf-8')
+settings = Settings()
