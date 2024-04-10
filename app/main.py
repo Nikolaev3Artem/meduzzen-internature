@@ -18,4 +18,10 @@ app.add_middleware(
 app.include_router(health_check_router)
 
 if __name__ == "__main__":
-    uvicorn.run('main:app', host=settings.api_host, port=settings.api_port, log_level="info", reload=settings.debug)
+    uvicorn.run(
+        "main:app",
+        host=settings.api_host,
+        port=settings.api_port,
+        log_level="info",
+        reload=settings.debug,
+    )
