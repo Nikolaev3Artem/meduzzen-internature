@@ -1,7 +1,13 @@
 from fastapi import APIRouter
+from fastapi import Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+
+from db.init_db import get_session
 
 router = APIRouter()
 
 @router.get("/")
-async def healthcheck():
+async def healthcheck(session: AsyncSession = Depends(get_session)):
+    await session.execute(select(1))
     return {"status_code": 200, "detail": "ok", "result": "working"}
