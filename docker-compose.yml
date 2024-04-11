@@ -29,7 +29,7 @@ services:
     - ${POSTGRES_PORT}:${POSTGRES_PORT}
 
   redis:
-    image: redis:latest
+    image: redis:7.2.4
     restart: always
     volumes:
       - /path/to/local/dаta:/root/redis
