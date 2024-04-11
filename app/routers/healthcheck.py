@@ -1,17 +1,36 @@
-from fastapi import APIRouter
-from fastapi import Depends
-from sqlalchemy.ext.asyncio import AsyncSession
+import redis.exceptions as redis_error
+from db.postgress import get_session
+from db.redis import redis_instanse
+from fastapi import APIRouter, Depends
 from sqlalchemy import select
-
-from db.init_postgress import get_session
-from db.init_redis import r
+from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter()
 
 
+@router.get("/redis")
+async def redis_healthcheck() -> dict:
+    try:
+        r = await redis_instanse()
+        await r.ping()
+        return {"status_code": 200, "detail": "ok", "result": "redis working"}
+    except redis_error.ConnectionError:
+        return {
+            "status_code": 500,
+            "detail": "None",
+            "result": "Connecting to redis was not successfull",
+        }
+
+
+@router.get("/postgress")
+async def postgress_healthcheck(session: AsyncSession = Depends(get_session)):
+    try:
+        await session.execute(select(1))
+        return {"status_code": 200, "detail": "ok", "result": "postgress working"}
+    except Exception as e:
+        return {"status_code": 500, "detail": e, "result": "postgress error"}
+
+
 @router.get("/")
-async def healthcheck(session: AsyncSession = Depends(get_session)):
-    await session.execute(select(1))
-    await r.set("test", "redis connected")
-    print(await r.get("test"))
+async def healthcheck():
     return {"status_code": 200, "detail": "ok", "result": "working"}
