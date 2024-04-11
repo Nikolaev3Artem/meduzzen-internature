@@ -32,8 +32,8 @@ services:
     image: redis:7.2.4
     restart: always
     volumes:
-      - /path/to/local/dаta:/root/redis
-      - /path/to/local/redis.conf:/usr/local/etc/redis/redis.conf
+      - /app/redis/dаta:/app/redis/data
+      - /app/redis/redis.conf:/usr/local/etc/redis/redis.conf
     environment:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - REDIS_PORT=${REDIS_PORT}
