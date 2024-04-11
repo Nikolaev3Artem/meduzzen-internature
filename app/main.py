@@ -1,8 +1,8 @@
 import uvicorn
+from core.config import settings
 from fastapi import FastAPI
-from app.routers.healthcheck import router as health_check_router
-from app.core.config import settings
 from fastapi.middleware.cors import CORSMiddleware
+from routers.healthcheck import router as health_check_router
 
 app = FastAPI()
 
@@ -17,4 +17,10 @@ app.add_middleware(
 app.include_router(health_check_router)
 
 if __name__ == "__main__":
-    uvicorn.run('main:app', host=settings.api_host, port=settings.api_port, log_level="info", reload=settings.debug)
+    uvicorn.run(
+        "main:app",
+        host=settings.api_host,
+        port=settings.api_port,
+        log_level="info",
+        reload=settings.debug,
+    )

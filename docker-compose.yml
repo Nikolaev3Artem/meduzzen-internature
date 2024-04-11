@@ -2,6 +2,9 @@ version: '3.7'
 
 services:
   api:
+    depends_on: 
+      - postgress
+      - redis
     restart: always
     build: 
       context: .
@@ -9,6 +12,31 @@ services:
     volumes:
       - .:/app
     ports:
-      - $API_PORT:$API_PORT
+      - ${API_PORT}:${API_PORT}
     env_file:
       - .env
+  
+  postgress:
+    image: postgres:15
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+    - ${POSTGRES_PORT}:${POSTGRES_PORT}
+
+  redis:
+    image: redis:7.2.4
+    restart: always
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_DATABASES=${REDIS_DATABASES}
+    ports:
+      - ${REDIS_PORT}:${REDIS_PORT}
+
+volumes:
+  postgres_data:
