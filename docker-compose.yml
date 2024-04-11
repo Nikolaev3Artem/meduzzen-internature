@@ -32,7 +32,7 @@ services:
     image: redis:7.2.4
     restart: always
     volumes:
-      - /app/redis/dаta:/app/redis/data
+      - redis_data:/redis/data
     environment:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - REDIS_PORT=${REDIS_PORT}
@@ -42,3 +42,4 @@ services:
 
 volumes:
   postgres_data:
+  redis_data:
