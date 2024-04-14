@@ -10,3 +10,5 @@ COPY ./prod.requirements.txt ./
 RUN pip install -r prod.requirements.txt
 
 COPY . .
+
+CMD ["python", "./app/main.py"]

@@ -13,10 +13,6 @@ services:
       - .:/app
     ports:
       - ${API_PORT}:${API_PORT}
-    command: 
-      - /bin/sh
-      - '-c'
-      - './app/entrypoint.sh'
     env_file:
       - .env
   
