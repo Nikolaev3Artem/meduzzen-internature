@@ -5,6 +5,14 @@
 ### Create your own .env file using .env.example for example
 ### docker-compose up -d --build
 
+## Migrations:
+## If you don`t use docker:
+### alembic upgrade head - To apply all migrations
+### alembic downgrade -1 - Downgrade to previous migration
+## If you use docker migrations applies in app/entrypoint.sh, but you can manage it manually:
+### docker-compose exec api alembic upgrade head
+### docker-compose exec api alembic downgrade -1
+
 ## Testing app:
 ### pytest
 
