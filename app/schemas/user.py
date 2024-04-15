@@ -1,28 +1,29 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
+from sqlalchemy.dialects.postgresql import UUID
+
+
+class UserBase(BaseModel):
+    email: EmailStr
+    username: str
 
 
 class UserSignIn(BaseModel):
-    email: str
+    email: EmailStr
     password: str
 
 
-class UserSignUp(BaseModel):
-    email: str
+class UserSignUp(UserBase):
     password: str
-    username: str
 
 
 class UserUpdate(BaseModel):
-    password: str
-    username: str
+    password: str | None
+    username: str | None
 
 
-class UserList(BaseModel):
-    email: str
-    username: str
+class GetUser(UserBase):
+    id: UUID
 
 
-class UserDetail(BaseModel):
-    email: str
-    password: str
-    username: str
+class UserDetail(GetUser):
+    pass
