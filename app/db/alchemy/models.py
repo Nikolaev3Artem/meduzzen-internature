@@ -20,6 +20,6 @@ class IDBase(Base):
 class User(IDBase):
     __tablename__ = "users"
 
-    email: Mapped[str] = mapped_column(String, unique=True)
+    email: Mapped[str] = mapped_column(String(80), unique=True)
     password: Mapped[str] = mapped_column(String)
     username: Mapped[str] = mapped_column(String(100))
