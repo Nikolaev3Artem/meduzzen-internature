@@ -1,5 +1,6 @@
+from uuid import UUID
+
 from pydantic import BaseModel, EmailStr
-from sqlalchemy.dialects.postgresql import UUID
 
 
 class UserBase(BaseModel):
