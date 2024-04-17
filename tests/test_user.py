@@ -1,14 +1,14 @@
-from fastapi.testclient import TestClient
+from httpx import AsyncClient
 
 
-def test_user_get(client: TestClient):
-    response = client.get("user/")
+async def test_user_get(ac: AsyncClient):
+    response = await ac.get("/user/")
     assert response.status_code == 200
 
 
-def test_user_create(client: TestClient):
-    response = client.post(
-        "user/create/",
+async def test_user_create(ac: AsyncClient):
+    response = await ac.post(
+        "/user/create/",
         json={
             "email": "testemail@gmail.com",
             "username": "test_username",
@@ -16,5 +16,3 @@ def test_user_create(client: TestClient):
         },
     )
     assert response.status_code == 200
-
-    # assert response.json() == {"test_username","testemail@gmail.com","$2b$12$L3GaFTLL8spMuiF3GnTD9OGPmnUBBlLL4MO047NmM8M.tVi8eNZjm","d56a9112-15ba-4199-9d2e-44ab7ab90b2c"}

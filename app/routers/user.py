@@ -1,7 +1,7 @@
 from uuid import UUID
 
 from db.postgress import get_session
-from db.user import create_user, delete_user, get_user, list_users, update_user
+from db.repos.user import create_user, delete_user, get_user, list_users, update_user
 from fastapi import APIRouter, Depends
 from schemas.user import GetUser, UserSignUp, UserUpdate
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -34,7 +34,7 @@ async def user_delete(id: UUID, session: AsyncSession = Depends(get_session)):
     return {"status_code": 500, "detail": "None", "result": "Undefined error"}
 
 
-@router.put("/update/")
+@router.patch("/update/")
 async def user_update(
     id: UUID, user: UserUpdate, session: AsyncSession = Depends(get_session)
 ):

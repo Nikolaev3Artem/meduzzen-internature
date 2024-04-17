@@ -2,9 +2,8 @@ from core.config import settings
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-database_url = f"postgresql+asyncpg://{settings.postgres_user}:{settings.postgres_password}@0.0.0.0:{settings.postgres_port}/{settings.postgres_db}"
-test_database_url = f"postgresql+asyncpg://{settings.postgres_user}:{settings.postgres_password}@testpostgress:6120/{settings.postgres_db}_test"
-print(database_url)
+database_url = f"postgresql+asyncpg://{settings.postgres_user}:{settings.postgres_password}@{settings.postgres_host}:{settings.postgres_port}/{settings.postgres_db}"
+
 engine = create_async_engine(database_url, echo=True)
 
 async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
