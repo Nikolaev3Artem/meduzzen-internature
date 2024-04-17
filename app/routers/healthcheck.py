@@ -24,11 +24,8 @@ async def redis_healthcheck() -> dict:
 
 @router.get("/postgress")
 async def postgress_healthcheck(session: AsyncSession = Depends(get_session)) -> dict:
-    try:
-        await session.execute(select(1))
-        return {"status_code": 200, "detail": "ok", "result": "postgress working"}
-    except Exception as e:
-        return {"status_code": 500, "detail": e, "result": "postgress error"}
+    await session.execute(select(1))
+    return {"status_code": 200, "detail": "ok", "result": "postgress working"}
 
 
 @router.get("/")
