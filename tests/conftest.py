@@ -1,5 +1,6 @@
 import asyncio
 import os
+import time
 from typing import AsyncGenerator
 
 from httpx import AsyncClient
@@ -12,8 +13,10 @@ from app.db.postgress import get_session
 from app.main import app
 
 test_database_url = f"postgresql+asyncpg://{settings.postgres_user}:{settings.postgres_password}@{settings.postgres_host}:5432/{settings.postgres_db}_test"
-engine = create_async_engine(test_database_url, future=True, echo=True)
-test_async_session = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
+engine_test = create_async_engine(test_database_url, future=True, echo=True)
+test_async_session = sessionmaker(
+    engine_test, expire_on_commit=False, class_=AsyncSession
+)
 
 
 async def override_get_session() -> AsyncSession:
@@ -25,10 +28,11 @@ app.dependency_overrides[get_session] = override_get_session
 
 
 @fixture(scope="session", autouse=True)
-def run_migrations():
+def setup_docker():
+    os.system("docker-compose -f docker-compose-test.yml up -d --build")
+    time.sleep(2)
     os.system("alembic upgrade head")
     yield
-    os.system("alembic downgrade base")
 
 
 @fixture(scope="session")

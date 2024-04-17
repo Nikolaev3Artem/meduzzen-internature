@@ -1,9 +1,6 @@
+import time
+
 from httpx import AsyncClient
-
-
-async def test_user_get(ac: AsyncClient):
-    response = await ac.get("/user/")
-    assert response.status_code == 200
 
 
 async def test_user_create(ac: AsyncClient):
@@ -15,4 +12,11 @@ async def test_user_create(ac: AsyncClient):
             "password": "test_password",
         },
     )
+    time.sleep(15)
     assert response.status_code == 200
+
+
+async def test_user_get(ac: AsyncClient):
+    response = await ac.get("/user/")
+    assert response.status_code == 200
+    print(response.json())

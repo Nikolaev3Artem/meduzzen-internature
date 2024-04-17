@@ -15,8 +15,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(health_check_router)
-app.include_router(user_router)
+app.include_router(health_check_router, prefix="/healthcheck", tags=["Healthcheck"])
+app.include_router(user_router, prefix="/user", tags=["User"])
 
 if __name__ == "__main__":
     uvicorn.run(

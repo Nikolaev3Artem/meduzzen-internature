@@ -10,8 +10,6 @@ repos:
       - id: check-yaml
       - id: check-toml
 
-
-
 -   repo: https://github.com/psf/black
     rev: 23.11.0
     hooks:
