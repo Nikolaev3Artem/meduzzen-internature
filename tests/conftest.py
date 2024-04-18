@@ -6,12 +6,12 @@ from fastapi.testclient import TestClient
 from app.core.config import settings
 from app.db.postgress import get_session
 from app.main import app
-from app.db.postgress import metadata
+from app.db.alchemy.models import Base
 
-database_url = f"postgresql+asyncpg://{settings.postgres_user}:{settings.postgres_password}@{settings.postgres_host}:{settings.postgres_port}/{settings.postgres_db}_test"
-engine_test = create_async_engine(database_url, echo=True)
+test_database_url = f"postgresql+asyncpg://{settings.postgres_user}:{settings.postgres_password}@{settings.postgres_host}:{settings.postgres_port}/{settings.postgres_db}_test"
+engine_test = create_async_engine(test_database_url, echo=True)
 async_session = sessionmaker(engine_test, expire_on_commit=False, class_=AsyncSession)
-metadata.bind = engine_test
+Base.metadata.bind = engine_test
 
 
 async def override_get_session() -> AsyncSession:
@@ -25,10 +25,10 @@ app.dependency_overrides[get_session] = override_get_session
 @fixture(scope="session", autouse=True)
 async def prepare_database():
     async with engine_test.begin() as conn:
-        await conn.run_sync(metadata.create_all)
+        await conn.run_sync(Base.metadata.create_all)
     yield
     async with engine_test.begin() as conn:
-        await conn.run_sync(metadata.drop_all)
+        await conn.run_sync(Base.metadata.drop_all)
 
 
 # @fixture(scope="session", autouse=True)

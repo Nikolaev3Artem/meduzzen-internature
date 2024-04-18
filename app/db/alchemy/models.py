@@ -8,6 +8,7 @@ from db.postgress import metadata
 
 class Base(DeclarativeBase):
     __abstract__ = True
+    metadata
 
 
 class IDBase(Base):
@@ -19,7 +20,7 @@ class IDBase(Base):
 
 class User(IDBase):
     __tablename__ = "users"
-    metadata
+
     email: Mapped[str] = mapped_column(String(80), unique=True)
     password: Mapped[str] = mapped_column(String)
     username: Mapped[str] = mapped_column(String(100))

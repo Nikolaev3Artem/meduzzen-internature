@@ -19,7 +19,7 @@ from app.db.postgress import metadata
 config = context.config
 config.set_main_option(
     "sqlalchemy.url",
-    f"postgresql+asyncpg://{settings.postgres_user}:{settings.postgres_password}@{settings.postgres_host}:{settings.postgres_port}/{settings.postgres_db}_test",
+    f"postgresql+asyncpg://{settings.postgres_user}:{settings.postgres_password}@{settings.postgres_host}:{settings.postgres_port}/{settings.postgres_db}",
 )
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
