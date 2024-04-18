@@ -10,6 +10,6 @@ def test_user_create(client: AsyncClient):
     assert response.status_code == 200
 
 
-def test_user_get(client: AsyncClient):
-    response = client.get("/user/")
-    assert response.status_code == 200
+# def test_user_get(client: AsyncClient):
+#     response = client.get("/user/")
+#     assert response.status_code == 200

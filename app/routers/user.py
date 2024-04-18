@@ -6,7 +6,6 @@ from fastapi import APIRouter, Depends
 from schemas.user import GetUser, UserSignUp, UserUpdate
 from sqlalchemy.ext.asyncio import AsyncSession
 
-
 router = APIRouter()
 
 
