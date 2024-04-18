@@ -1,5 +1,5 @@
-from db.alchemy.repos.user import UserRepos
-from schemas.user import UserSignUp, UserUpdate
+from app.db.alchemy.repos.user import UserRepos
+from app.schemas.user import UserSignUp, UserUpdate
 from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -19,4 +19,4 @@ class UserService:
         return user_status
 
     async def user_update(id: UUID, user: UserUpdate, session: AsyncSession):
-        return await UserRepos.update_user(id=id, session=session)
+        return await UserRepos.update_user(id=id, user=user, session=session)

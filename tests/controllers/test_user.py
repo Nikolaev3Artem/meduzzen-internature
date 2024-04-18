@@ -1,8 +1,8 @@
-from httpx import AsyncClient
-from .constants import user
+from tests.constants import user
+from fastapi.testclient import TestClient
 
 
-def test_user_create(client: AsyncClient):
+def test_user_create(client: TestClient):
     response = client.post(
         "/user/create/",
         json=user,
@@ -10,6 +10,6 @@ def test_user_create(client: AsyncClient):
     assert response.status_code == 200
 
 
-def test_user_get(client: AsyncClient):
+def test_user_get(client: TestClient):
     response = client.get("/user/")
     assert response.status_code == 200

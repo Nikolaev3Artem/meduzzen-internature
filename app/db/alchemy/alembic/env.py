@@ -1,8 +1,4 @@
 import asyncio
-import sys
-import os
-
-sys.path.append(os.path.join(sys.path[0], "app"))
 
 from logging.config import fileConfig
 

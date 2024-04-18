@@ -11,10 +11,11 @@
 ### alembic downgrade -1 - Downgrade to previous migration
 ## If you use docker migrations applies in app/entrypoint.sh, but you can manage it manually:
 ### docker-compose exec api alembic upgrade head
-### docker-compose exec api alembic downgrade -1
+### docker-compose exec api alembic downgrade base
 
 ## Testing app:
-### pytest
+### docker-compose -f docker-compose-test.yml up -d --build
+### pytest tests/
 
 ## Docs:
 ### http://localhost/docs/ or http://127.0.0.1/docs/

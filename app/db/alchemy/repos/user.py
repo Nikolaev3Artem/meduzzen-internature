@@ -1,8 +1,8 @@
 from uuid import UUID
 
-from core.hashing import Hasher
-from db.alchemy.models import User
-from schemas.user import UserSignUp
+from app.core.hashing import Hasher
+from app.db.alchemy.models import User
+from app.schemas.user import UserSignUp, UserUpdate
 from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -38,7 +38,7 @@ class UserRepos:
         return True
 
     @staticmethod
-    async def update_user(id: UUID, session: AsyncSession) -> bool:
+    async def update_user(id: UUID, user: UserUpdate, session: AsyncSession) -> bool:
         await session.execute(update(User).where(User.id == id))
         await session.commit()
         return True

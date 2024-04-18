@@ -3,7 +3,7 @@ import uuid
 from sqlalchemy import String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from db.postgress import metadata
+from app.db.postgress import metadata
 
 
 class Base(DeclarativeBase):
