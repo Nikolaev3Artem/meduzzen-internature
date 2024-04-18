@@ -1,22 +1,15 @@
-import time
-
 from httpx import AsyncClient
+from .constants import user
 
 
-async def test_user_create(ac: AsyncClient):
-    response = await ac.post(
+def test_user_create(client: AsyncClient):
+    response = client.post(
         "/user/create/",
-        json={
-            "email": "testemail@gmail.com",
-            "username": "test_username",
-            "password": "test_password",
-        },
+        json=user,
     )
-    time.sleep(15)
     assert response.status_code == 200
 
 
-async def test_user_get(ac: AsyncClient):
-    response = await ac.get("/user/")
+def test_user_get(client: AsyncClient):
+    response = client.get("/user/")
     assert response.status_code == 200
-    print(response.json())
