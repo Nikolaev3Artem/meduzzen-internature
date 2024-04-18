@@ -10,6 +10,11 @@ def test_user_create(client: TestClient):
     assert response.status_code == 200
 
 
+def test_user_get_list(client: TestClient):
+    response = client.get("/user/")
+    assert response.status_code == 200
+
+
 def test_user_get(client: TestClient):
     response = client.get("/user/")
     assert response.status_code == 200

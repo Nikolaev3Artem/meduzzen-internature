@@ -18,8 +18,8 @@ class UserSignUp(UserBase):
 
 
 class UserUpdate(BaseModel):
-    password: str | None
-    username: str | None
+    password: str | None = None
+    username: str | None = None
 
 
 class GetUser(UserBase):
