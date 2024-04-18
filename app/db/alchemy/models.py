@@ -3,12 +3,10 @@ import uuid
 from sqlalchemy import String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from app.db.postgress import metadata
 
 
 class Base(DeclarativeBase):
     __abstract__ = True
-    metadata
 
 
 class IDBase(Base):

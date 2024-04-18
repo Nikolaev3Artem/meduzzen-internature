@@ -1,11 +1,12 @@
 import redis.exceptions as redis_error
-from app.db.postgress import get_session
-from app.db.redis import Redis
 from fastapi import APIRouter, Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-router = APIRouter()
+from app.db.postgress import get_session
+from app.db.redis import Redis
+
+router = APIRouter(prefix="/healthcheck", tags=["Healthcheck"])
 
 
 @router.get("/redis")

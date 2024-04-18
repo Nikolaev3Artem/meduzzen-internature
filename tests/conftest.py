@@ -1,12 +1,14 @@
+from fastapi.testclient import TestClient
 from pytest import fixture
-from sqlalchemy.pool import NullPool
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
-from fastapi.testclient import TestClient
+from sqlalchemy.pool import NullPool
+
 from app.core.config import settings
+from app.db.alchemy.models import Base
 from app.db.postgress import get_session
 from app.main import app
-from app.db.alchemy.models import Base
+from app.schemas.user import UserSignUp
 
 test_database_url = f"postgresql+asyncpg://{settings.postgres_user}:{settings.postgres_password}@{settings.postgres_test_host}:{settings.postgres_test_port}/{settings.postgres_test_db}"
 engine_test = create_async_engine(
@@ -30,6 +32,11 @@ async def prepare_database():
     yield
     async with engine_test.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
+
+
+@fixture
+def create_user():
+    return UserSignUp
 
 
 @fixture(name="client", scope="session")
