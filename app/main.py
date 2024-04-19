@@ -1,7 +1,9 @@
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
+from app.core.common import ObjNotFoundException
 from app.core.config import settings
 from app.routers.healthcheck import router as health_check_router
 from app.routers.user import router as user_router
@@ -15,6 +17,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.exception_handler(ObjNotFoundException)
+async def unicorn_exception_handler(request: Request, exc: ObjNotFoundException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content=exc.detail,
+    )
+
 
 app.include_router(health_check_router)
 app.include_router(user_router)

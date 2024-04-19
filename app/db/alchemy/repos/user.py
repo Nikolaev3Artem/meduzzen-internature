@@ -1,10 +1,9 @@
 from uuid import UUID
 
-from sqlalchemy import delete, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-# from sqlalchemy.exc
-from app.core.common import UserNotFound
+from app.core.common import ObjNotFoundException
 from app.core.hashing import Hasher
 from app.db.alchemy.models import User
 from app.schemas.user import UserBase, UserSignUp, UserUpdate
@@ -31,15 +30,16 @@ class UserRepos:
 
     @staticmethod
     async def get_user(id: UUID, session: AsyncSession) -> User:
-        user = await session.execute(select(User).where(User.id == id))
-        user_data = user.scalar()
+        user = await session.get(User, id)
+        user_data = user
         if user_data is None:
-            raise UserNotFound
+            raise ObjNotFoundException
         return user_data
 
     @staticmethod
     async def delete_user(id: UUID, session: AsyncSession) -> None:
-        await session.execute(delete(User).where(User.id == id))
+        user = await session.get(User, id)
+        await session.delete(user)
         await session.commit()
         return None
 

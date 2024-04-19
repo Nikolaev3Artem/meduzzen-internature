@@ -12,15 +12,10 @@ def test_user_create(client: TestClient):
             "password": user.password,
         },
     )
+    result_data = response.json()
     assert response.status_code == 200
-
-
-# def test_user_duplicated_keys(client: TestClient):
-#     response = client.post(
-#         "/user/",
-#         json=user,
-#     )
-#     assert response.status_code == 409
+    assert result_data["email"] == user.email
+    assert result_data["username"] == user.username
 
 
 def test_user_get_list(client: TestClient):
