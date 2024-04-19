@@ -21,13 +21,13 @@ async def users_list(session: AsyncSession = Depends(get_session)):
 
 
 @router.get("/{user_id}")
-async def user_get(id: UUID, session: AsyncSession = Depends(get_session)):
-    return await UserService.user_get(id=id, session=session)
+async def user_get(user_id: UUID, session: AsyncSession = Depends(get_session)):
+    return await UserService.user_get(id=user_id, session=session)
 
 
 @router.delete("/{user_id}")
-async def user_delete(id: UUID, session: AsyncSession = Depends(get_session)):
-    user_status = await UserService.user_delete(id=id, session=session)
+async def user_delete(user_id: UUID, session: AsyncSession = Depends(get_session)):
+    user_status = await UserService.user_delete(id=user_id, session=session)
 
     if user_status:
         return {"status_code": 200, "detail": "ok", "result": "User deleted!"}
@@ -37,6 +37,6 @@ async def user_delete(id: UUID, session: AsyncSession = Depends(get_session)):
 
 @router.patch("/{user_id}")
 async def user_update(
-    id: UUID, user: UserUpdate, session: AsyncSession = Depends(get_session)
+    user_id: UUID, user: UserUpdate, session: AsyncSession = Depends(get_session)
 ):
-    return await UserService.user_update(id=id, user=user, session=session)
+    return await UserService.user_update(id=user_id, user=user, session=session)
