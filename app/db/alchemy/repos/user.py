@@ -3,12 +3,11 @@ from uuid import UUID
 from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+# from sqlalchemy.exc
+from app.core.common import UserNotFound
 from app.core.hashing import Hasher
 from app.db.alchemy.models import User
 from app.schemas.user import UserBase, UserSignUp, UserUpdate
-
-# from sqlalchemy.exc
-# from app.core.common import UserNotFound
 
 
 class UserRepos:
@@ -34,7 +33,8 @@ class UserRepos:
     async def get_user(id: UUID, session: AsyncSession) -> User:
         user = await session.execute(select(User).where(User.id == id))
         user_data = user.scalar()
-
+        if user_data is None:
+            raise UserNotFound
         return user_data
 
     @staticmethod

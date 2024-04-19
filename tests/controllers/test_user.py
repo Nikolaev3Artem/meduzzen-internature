@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 
-from tests.constants import user
+from tests.constants import user, user_bad_id
 
 
 def test_user_create(client: TestClient):
@@ -33,6 +33,11 @@ def test_user_get(client: TestClient):
     test_user_id = test_user.json()[0][0]["id"]
     response = client.get(f"/user/{test_user_id}")
     assert response.status_code == 200
+
+
+def test_user_not_found_error(client: TestClient):
+    response = client.get(f"/user/{user_bad_id}")
+    assert response.status_code == 404
 
 
 def test_user_update(client: TestClient):

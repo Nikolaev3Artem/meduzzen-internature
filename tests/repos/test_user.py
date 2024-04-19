@@ -21,9 +21,17 @@ async def test_user_get_list(session: AsyncSession):
 
 
 async def test_user_update(session: AsyncSession):
-    test_user_get = await UserRepos.list_users(session)
-    test_user_id = test_user_get[0][0].id
+    test_users_list = await UserRepos.list_users(session)
+    test_user_id = test_users_list[0][0].id
     test_user_data = await UserRepos.update_user(
         id=test_user_id, user=user_update_scheme, session=session
     )
     assert updated_username.username == test_user_data.username
+
+
+async def test_user_delete(session: AsyncSession):
+    test_users_list = await UserRepos.list_users(session)
+    test_user_id = test_users_list[0][0].id
+    await UserRepos.delete_user(id=test_user_id, session=session)
+    test_users_list = await UserRepos.list_users(session)
+    assert test_user_id not in test_users_list
