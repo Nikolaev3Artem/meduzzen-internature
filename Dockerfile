@@ -13,7 +13,4 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-COPY ./pyproject.toml ./
-RUN pip install .
-
 CMD ["python", "./app/main.py"]

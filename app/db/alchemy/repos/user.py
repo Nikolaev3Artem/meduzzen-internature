@@ -3,7 +3,7 @@ from uuid import UUID
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.common import ObjNotFoundException
+from app.core.exceptions import UserNotFound
 from app.core.hashing import Hasher
 from app.db.alchemy.models import User
 from app.schemas.user import UserBase, UserSignUp, UserUpdate
@@ -23,23 +23,25 @@ class UserRepos:
         return user
 
     @staticmethod
-    async def list_users(session: AsyncSession) -> list[User]:
-        users_list = await session.execute(select(User))
-        result = [list(user) for user in users_list]
-        return result
+    async def list_users(limit: int, offset: int, session: AsyncSession) -> list[User]:
+        users_list = await session.execute(
+            select(User).limit(limit).offset(offset * limit)
+        )
+        return users_list.scalars().all()
 
     @staticmethod
     async def get_user(id: UUID, session: AsyncSession) -> User:
-        user = await session.get(User, id)
-        user_data = user
+        user_data = await session.get(User, id)
         if user_data is None:
-            raise ObjNotFoundException
+            raise UserNotFound(id_=id)
         return user_data
 
     @staticmethod
     async def delete_user(id: UUID, session: AsyncSession) -> None:
-        user = await session.get(User, id)
-        await session.delete(user)
+        user_data = await session.get(User, id)
+        if user_data is None:
+            raise UserNotFound(id_=id)
+        await session.delete(user_data)
         await session.commit()
         return None
 
@@ -47,14 +49,13 @@ class UserRepos:
     async def update_user(
         id: UUID, user: UserUpdate, session: AsyncSession
     ) -> UserBase:
-        get_user = await UserRepos.get_user(id, session)
-        user_data = user.model_dump(exclude_unset=True)
+        user_in_db = await session.get(User, id)
+        if user_in_db is None:
+            raise UserNotFound(id_=id)
+        user = user.model_dump(exclude_unset=True)
 
-        if "password" in user_data:
-            user_data["password"] = Hasher.get_password_hash(user_data["password"])
-
-        for key, value in user_data.items():
-            setattr(get_user, key, value)
+        for key, value in user.items():
+            setattr(user_in_db, key, value)
 
         await session.commit()
-        return get_user
+        return user_in_db
