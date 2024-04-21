@@ -9,7 +9,7 @@ from app.schemas.user import UserSignUp, UserUpdate
 
 class UserService:
     def __init__(self):
-        self._repo = UserRepos
+        self._repo = UserRepos()
 
     async def user_create(self, user: UserSignUp, session: AsyncSession):
         return await self._repo.create_user(user=user, session=session)
