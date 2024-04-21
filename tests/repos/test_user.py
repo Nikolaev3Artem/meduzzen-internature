@@ -13,9 +13,9 @@ from tests.constants import (
 async def test_user_get_list(prepare_database, fill_database, session: AsyncSession):
     test_user_data = await UserRepos.list_users(session=session, limit=3, offset=0)
     assert len(test_user_data) == 3
-    for i in range(len(users)):
-        assert test_user_data[i].username == users[i]["username"]
-        assert test_user_data[i].email == users[i]["email"]
+    for index, user in enumerate(users):
+        assert test_user_data[index].username == user["username"]
+        assert test_user_data[index].email == user["email"]
 
 
 async def test_user_create(prepare_database, fill_database, session: AsyncSession):

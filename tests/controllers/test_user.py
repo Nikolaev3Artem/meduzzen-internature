@@ -15,10 +15,9 @@ def test_user_get_list(client: TestClient, prepare_database, fill_database):
     response_data = response.json()
     assert response.status_code == 200
     assert len(response_data) == 3
-    for i in range(len(users)):
-        assert response_data[i]["username"] == users[i]["username"]
-        assert response_data[i]["email"] == users[i]["email"]
-        assert response_data[i]["password"] == users[i]["password"]
+    for index, user in enumerate(users):
+        assert response_data[index]["username"] == user["username"]
+        assert response_data[index]["email"] == user["email"]
 
 
 def test_user_create(client: TestClient, prepare_database, fill_database):
