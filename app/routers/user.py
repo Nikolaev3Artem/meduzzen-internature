@@ -10,7 +10,7 @@ from app.services.user import UserService
 router = APIRouter(prefix="/user", tags=["User"])
 
 
-@router.post("/", response_model=UserSignUp)
+@router.post("/", response_model=UserSignUp, status_code=status.HTTP_201_CREATED)
 async def user_create(
     user: UserSignUp,
     session: AsyncSession = Depends(get_session),

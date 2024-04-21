@@ -30,7 +30,7 @@ def test_user_create(client: TestClient, prepare_database, fill_database):
         },
     )
     result_data = response.json()
-    assert response.status_code == 200
+    assert response.status_code == 201
     assert result_data["email"] == test_user_create_email
     assert result_data["username"] == test_user_create_username
 
