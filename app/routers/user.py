@@ -38,14 +38,15 @@ async def user_get(
     return await user_service.user_get(id=user_id, session=session)
 
 
-@router.delete("/{user_id}", response_model=None)
+@router.delete(
+    "/{user_id}", response_model=None, status_code=status.HTTP_204_NO_CONTENT
+)
 async def user_delete(
     user_id: UUID,
     session: AsyncSession = Depends(get_session),
     user_service: UserService = Depends(UserService),
 ):
-    await user_service.user_delete(id=user_id, session=session)
-    return status.HTTP_204_NO_CONTENT
+    return await user_service.user_delete(id=user_id, session=session)
 
 
 @router.patch("/{user_id}", response_model=UserUpdate)

@@ -67,4 +67,4 @@ def test_user_delete(client: TestClient, prepare_database, fill_database):
     test_user = client.get("/user/?limit=1&offset=0")
     test_user_id = test_user.json()[0]["id"]
     response = client.delete(f"/user/{test_user_id}")
-    assert response.status_code == 200
+    assert response.status_code == 204
