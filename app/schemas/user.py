@@ -1,5 +1,6 @@
+from uuid import UUID
+
 from pydantic import BaseModel, EmailStr
-from sqlalchemy.dialects.postgresql import UUID
 
 
 class UserBase(BaseModel):
@@ -17,8 +18,8 @@ class UserSignUp(UserBase):
 
 
 class UserUpdate(BaseModel):
-    password: str | None
-    username: str | None
+    password: str | None = None
+    username: str | None = None
 
 
 class GetUser(UserBase):

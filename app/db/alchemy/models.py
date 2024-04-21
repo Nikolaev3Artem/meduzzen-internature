@@ -11,7 +11,6 @@ class Base(DeclarativeBase):
 
 class IDBase(Base):
     __abstract__ = True
-
     id: Mapped[int] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
