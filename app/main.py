@@ -5,8 +5,8 @@ from fastapi.responses import JSONResponse
 
 from app.core.config import settings
 from app.core.exceptions import ObjectNotFound
-from app.routers.auth import router as auth_router
 from app.routers.healthcheck import router as health_check_router
+from app.routers.jwt_auth import router as auth_router
 from app.routers.user import router as user_router
 
 app = FastAPI()

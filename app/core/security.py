@@ -1,8 +1,7 @@
 import jwt
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi.security import HTTPAuthorizationCredentials
 
 from app.core.config import settings
-from app.services.user import UserService
 
 
 def create_jwt_token(payload_data: dict):
@@ -11,17 +10,11 @@ def create_jwt_token(payload_data: dict):
     )
 
 
-async def get_user_by_token(
-    token: str, user_service: UserService, session: AsyncSession
-):
-    user_email = jwt.decode(
-        token,
+async def get_user_by_token(token: HTTPAuthorizationCredentials):
+    return jwt.decode(
+        token.credentials,
         key=settings.jwt_security_key,
         algorithms=[
             "HS256",
         ],
-    )
-    print(user_email)
-    return await user_service.user_get_by_email(
-        email=user_email["email"], session=session
     )
