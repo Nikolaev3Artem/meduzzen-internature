@@ -20,6 +20,9 @@ class UserService:
     async def user_get(self, id: UUID, session: AsyncSession):
         return await self._repo.get_user(id=id, session=session)
 
+    async def user_get_by_email(self, email: str, session: AsyncSession):
+        return await self._repo.get_user_by_email(email=email, session=session)
+
     async def user_delete(self, id: UUID, session: AsyncSession):
         return await self._repo.delete_user(id=id, session=session)
 

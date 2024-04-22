@@ -17,6 +17,8 @@ class Settings(BaseSettings):
     postgres_test_port: str
     postgres_test_db: str
 
+    jwt_security_key: str
+
     @property
     def database_url(self):
         return f"postgresql+asyncpg://{self.postgres_user}:{self.postgres_password}@{self.postgres_host}:{self.postgres_port}/{self.postgres_db}"

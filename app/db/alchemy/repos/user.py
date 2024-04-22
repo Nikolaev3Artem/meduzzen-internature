@@ -37,6 +37,14 @@ class UserRepos:
         return user_data
 
     @staticmethod
+    async def get_user_by_email(email: str, session: AsyncSession) -> User:
+        user_data = await session.execute(select(User).where(User.email == email))
+        user_data = user_data.scalar()
+        if user_data is None:
+            raise UserNotFound(id_=email)
+        return user_data
+
+    @staticmethod
     async def delete_user(id: UUID, session: AsyncSession) -> None:
         user_data = await session.get(User, id)
         if user_data is None:
