@@ -18,6 +18,9 @@ class Settings(BaseSettings):
     postgres_test_db: str
 
     jwt_security_key: str
+    auth0_audience: str
+    auth0_issuer: str
+    auth0_domain: str
 
     @property
     def database_url(self):
