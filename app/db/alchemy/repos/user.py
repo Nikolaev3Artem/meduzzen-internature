@@ -33,14 +33,22 @@ class UserRepos:
     async def get_user(id: UUID, session: AsyncSession) -> User:
         user_data = await session.get(User, id)
         if user_data is None:
-            raise UserNotFound(id_=id)
+            raise UserNotFound(identifier_=id)
+        return user_data
+
+    @staticmethod
+    async def get_user_by_email(email: str, session: AsyncSession) -> User:
+        user_data = await session.execute(select(User).where(User.email == email))
+        user_data = user_data.scalar()
+        if user_data is None:
+            raise UserNotFound(identifier_=email)
         return user_data
 
     @staticmethod
     async def delete_user(id: UUID, session: AsyncSession) -> None:
         user_data = await session.get(User, id)
         if user_data is None:
-            raise UserNotFound(id_=id)
+            raise UserNotFound(identifier_=id)
         await session.delete(user_data)
         await session.commit()
         return None
@@ -51,7 +59,7 @@ class UserRepos:
     ) -> UserBase:
         user_in_db = await session.get(User, id)
         if user_in_db is None:
-            raise UserNotFound(id_=id)
+            raise UserNotFound(identifier_=id)
         user = user.model_dump(exclude_unset=True)
 
         for key, value in user.items():

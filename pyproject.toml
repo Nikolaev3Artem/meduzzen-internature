@@ -6,3 +6,6 @@ asyncio_mode="auto"
 
 [tool.isort]
 profile = "black"
+
+[tool.ruff]
+ignore = ["E722"]
