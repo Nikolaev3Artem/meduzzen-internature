@@ -42,20 +42,24 @@ async def user_get(
 
 @router.patch("/{user_id}/deactivate", status_code=status.HTTP_204_NO_CONTENT)
 async def user_deactivate(
+    user_id: UUID,
     user: User = Depends(get_active_user),
     session: AsyncSession = Depends(get_session),
     user_service: UserService = Depends(UserService),
 ) -> None:
-    return await user_service.user_deactivate(user=user, session=session)
+    if user_id == user.id:
+        return await user_service.user_deactivate(user_id=user_id, session=session)
 
 
 @router.patch("/{user_id}", response_model=UserUpdate)
 async def user_update(
+    user_id: UUID,
     user_data: UserUpdate,
     session: AsyncSession = Depends(get_session),
     user_service: UserService = Depends(UserService),
     user: User = Depends(get_active_user),
 ):
-    return await user_service.user_update(
-        user=user, user_data=user_data, session=session
-    )
+    if user_id == user.id:
+        return await user_service.user_update(
+            user_id=user_id, user_data=user_data, session=session
+        )

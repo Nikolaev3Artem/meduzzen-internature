@@ -48,21 +48,21 @@ class UserRepos:
         return user_data
 
     @staticmethod
-    async def deactivate_user(user: User, session: AsyncSession) -> None:
-        user_data = await session.get(User, user.id)
+    async def deactivate_user(user_id: UUID, session: AsyncSession) -> None:
+        user_data = await session.get(User, user_id)
         if not user_data or not user_data.is_active:
-            raise UserNotFound(identifier_=user.id)
+            raise UserNotFound(identifier_=user_id)
         user_data.is_active = False
         await session.commit()
         return None
 
     @staticmethod
     async def update_user(
-        user: User, user_data: UserUpdate, session: AsyncSession
+        user_id: UUID, user_data: UserUpdate, session: AsyncSession
     ) -> UserBase:
-        user_in_db = await session.get(User, user.id)
+        user_in_db = await session.get(User, user_id)
         if not user_in_db or not user_in_db.is_active:
-            raise UserNotFound(identifier_=user.id)
+            raise UserNotFound(identifier_=user_id)
         user_data = user_data.model_dump(exclude_unset=True)
 
         for key, value in user_data.items():
