@@ -2,15 +2,17 @@ import jwt
 from fastapi.security import HTTPAuthorizationCredentials
 
 from app.core.config import settings
+from app.schemas.auth import Token
 
 
 class JWTSecurity:
-    def create_jwt_token(payload_data: dict):
-        return jwt.encode(
+    def create_jwt_token(payload_data: Token) -> Token:
+        token = jwt.encode(
             payload=payload_data,
             key=settings.jwt_security_key,
             algorithm=settings.jwt_algorithm,
         )
+        return Token(token=token)
 
     async def get_user_by_token(token: HTTPAuthorizationCredentials):
         return jwt.decode(
