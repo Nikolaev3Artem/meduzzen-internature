@@ -17,6 +17,10 @@ class UserSignUp(UserBase):
     password: str
 
 
+class UserDeactivate(BaseModel):
+    is_active: bool
+
+
 class UserUpdate(BaseModel):
     password: str | None = None
     username: str | None = None

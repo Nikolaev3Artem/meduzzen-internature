@@ -22,3 +22,4 @@ class User(IDBase):
     email: Mapped[str] = mapped_column(String(80), unique=True)
     password: Mapped[str] = mapped_column(String)
     username: Mapped[str] = mapped_column(String(100))
+    is_active: Mapped[bool] = mapped_column(default=True)

@@ -3,8 +3,10 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.db.alchemy.models import User
 from app.db.postgress import get_session
 from app.schemas.user import GetUser, UserSignUp, UserUpdate
+from app.services.auth_jwt import get_active_user
 from app.services.user import UserService
 
 router = APIRouter(prefix="/user", tags=["User"])
@@ -38,20 +40,22 @@ async def user_get(
     return await user_service.user_get(id=user_id, session=session)
 
 
-@router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def user_delete(
-    user_id: UUID,
+@router.patch("/{user_id}/deactivate", status_code=status.HTTP_204_NO_CONTENT)
+async def user_deactivate(
+    user: User = Depends(get_active_user),
     session: AsyncSession = Depends(get_session),
     user_service: UserService = Depends(UserService),
 ) -> None:
-    return await user_service.user_delete(id=user_id, session=session)
+    return await user_service.user_deactivate(user=user, session=session)
 
 
 @router.patch("/{user_id}", response_model=UserUpdate)
 async def user_update(
-    user_id: UUID,
-    user: UserUpdate,
+    user_data: UserUpdate,
     session: AsyncSession = Depends(get_session),
     user_service: UserService = Depends(UserService),
+    user: User = Depends(get_active_user),
 ):
-    return await user_service.user_update(id=user_id, user=user, session=session)
+    return await user_service.user_update(
+        user=user, user_data=user_data, session=session
+    )

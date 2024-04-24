@@ -8,4 +8,4 @@ asyncio_mode="auto"
 profile = "black"
 
 [tool.ruff]
-ignore = ["E722"]
+ignore = ["E722", "E712"]
