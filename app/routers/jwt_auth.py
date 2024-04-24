@@ -11,7 +11,7 @@ from app.services.user import UserService
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
-@router.post("/register", response_model=UserSignUp)
+@router.post("/register", response_model=GetUser)
 async def user_register(
     user_data: UserSignUp,
     session: AsyncSession = Depends(get_session),
@@ -20,7 +20,7 @@ async def user_register(
     return await user_service.user_create(user=user_data, session=session)
 
 
-@router.post("/login", response_model=str)
+@router.post("/login", response_model=Token)
 async def user_login(
     user_data: UserSignIn,
     session: AsyncSession = Depends(get_session),
