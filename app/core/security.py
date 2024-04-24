@@ -7,16 +7,16 @@ from app.core.config import settings
 class JWTSecurity:
     def create_jwt_token(payload_data: dict):
         return jwt.encode(
-            payload=payload_data, key=settings.jwt_security_key, algorithm="HS256"
+            payload=payload_data,
+            key=settings.jwt_security_key,
+            algorithm=settings.jwt_algorithm,
         )
 
     async def get_user_by_token(token: HTTPAuthorizationCredentials):
         return jwt.decode(
             token.credentials,
             key=settings.jwt_security_key,
-            algorithms=[
-                "HS256",
-            ],
+            algorithms=settings.jwt_algorithm,
         )
 
 
@@ -31,7 +31,7 @@ class Auth0Security:
         payload = jwt.decode(
             token.credentials,
             signing_key,
-            algorithms=["RS256"],
+            algorithms=settings.auth0_algorithm,
             audience=settings.auth0_audience,
             issuer=settings.auth0_issuer,
         )

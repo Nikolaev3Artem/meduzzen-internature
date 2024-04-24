@@ -15,7 +15,7 @@ async def user_create(
     user: UserSignUp,
     session: AsyncSession = Depends(get_session),
     user_service: UserService = Depends(UserService),
-):
+) -> GetUser:
     return await user_service.user_create(user=user, session=session)
 
 
@@ -25,7 +25,7 @@ async def users_list(
     offset: int,
     session: AsyncSession = Depends(get_session),
     user_service: UserService = Depends(UserService),
-):
+) -> list[GetUser]:
     return await user_service.users_list(limit=limit, offset=offset, session=session)
 
 
@@ -34,7 +34,7 @@ async def user_get(
     user_id: UUID,
     session: AsyncSession = Depends(get_session),
     user_service: UserService = Depends(UserService),
-):
+) -> GetUser:
     return await user_service.user_get(id=user_id, session=session)
 
 
@@ -43,7 +43,7 @@ async def user_delete(
     user_id: UUID,
     session: AsyncSession = Depends(get_session),
     user_service: UserService = Depends(UserService),
-):
+) -> None:
     return await user_service.user_delete(id=user_id, session=session)
 
 
