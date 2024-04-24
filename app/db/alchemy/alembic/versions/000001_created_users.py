@@ -26,7 +26,6 @@ def upgrade() -> None:
         sa.Column("email", sa.String(80), unique=True),
         sa.Column("password", sa.String),
         sa.Column("username", sa.String(100)),
-        sa.Column("is_active", sa.Boolean, default=True),
     )
 
 
