@@ -3,7 +3,6 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.permissions import RoleChecker
 from app.db.alchemy.models import User
 from app.db.postgress import get_session
 from app.schemas.user import GetUser, UserSignUp, UserUpdate
@@ -46,11 +45,11 @@ async def user_deactivate(
     user_id: UUID,
     session: AsyncSession = Depends(get_session),
     user_service: UserService = Depends(UserService),
-    permission: bool = Depends(RoleChecker),
     user: User = Depends(get_active_user),
 ) -> None:
-    if await permission.check_permission(allowed_user_id=user_id, user=user):
-        return await user_service.user_deactivate(user_id=user_id, session=session)
+    return await user_service.user_deactivate(
+        user_id=user_id, session=session, user=user
+    )
 
 
 @router.patch("/{user_id}", response_model=UserUpdate)
@@ -59,10 +58,8 @@ async def user_update(
     user_data: UserUpdate,
     session: AsyncSession = Depends(get_session),
     user_service: UserService = Depends(UserService),
-    permission: bool = Depends(RoleChecker),
     user: User = Depends(get_active_user),
 ):
-    if await permission.check_permission(allowed_user_id=user_id, user=user):
-        return await user_service.user_update(
-            user_id=user_id, user_data=user_data, session=session
-        )
+    return await user_service.user_update(
+        user_id=user_id, user_data=user_data, session=session, user=user
+    )

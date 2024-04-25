@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.exceptions import UserNotFound
 from app.core.hashing import Hasher
 from app.db.alchemy.models import User
-from app.schemas.user import UserBase, UserSignUp, UserUpdate
+from app.schemas.user import GetUser, UserSignUp, UserUpdate
 
 
 class UserRepos:
@@ -25,10 +25,7 @@ class UserRepos:
     @staticmethod
     async def list_users(limit: int, offset: int, session: AsyncSession) -> list[User]:
         users_list = await session.execute(
-            select(User)
-            .where(User.is_active == True)
-            .limit(limit)
-            .offset(offset * limit)
+            select(User).where(User.is_active == True).limit(limit).offset(offset)
         )
         return users_list.scalars().all()
 
@@ -59,7 +56,7 @@ class UserRepos:
     @staticmethod
     async def update_user(
         user_id: UUID, user_data: UserUpdate, session: AsyncSession
-    ) -> UserBase:
+    ) -> GetUser:
         user_in_db = await session.get(User, user_id)
         if not user_in_db or not user_in_db.is_active:
             raise UserNotFound(identifier_=user_id)

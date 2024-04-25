@@ -21,3 +21,9 @@ class NotAllowed(Exception):
 class UserNotAllowed(NotAllowed):
     def __init__(self, identifier_: str, model_name: str = "User") -> None:
         super().__init__(model_name=model_name, identifier_=identifier_)
+
+
+class NotAuthorized(Exception):
+    def __init__(self) -> None:
+        self.msg = "Username or password is incorrect"
+        super().__init__(self.msg)

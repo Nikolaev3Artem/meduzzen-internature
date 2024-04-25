@@ -2,7 +2,6 @@ from fastapi import Depends, Security
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.hashing import Hasher
 from app.core.security import Auth0Security, JWTSecurity
 from app.db.postgress import get_session
 from app.schemas.auth import Token
@@ -18,14 +17,9 @@ class JwtService:
         session: AsyncSession = Depends(get_session),
         user_service: UserService = Depends(UserService),
     ) -> Token:
-        db_user = await user_service.user_get_by_email(
-            email=user_data.email, session=session
+        return await JWTSecurity.create_jwt_token(
+            user_data=user_data, session=session, user_service=user_service
         )
-        if Hasher.verify_password(
-            plain_password=user_data.password, hashed_password=db_user.password
-        ):
-            payload_data = {"email": user_data.email}
-            return JWTSecurity.create_jwt_token(payload_data=payload_data)
 
     async def get_token_data(token: HTTPAuthorizationCredentials) -> str:
         return await JWTSecurity.get_user_by_token(token=token)
