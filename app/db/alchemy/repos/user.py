@@ -51,7 +51,6 @@ class UserRepos:
             raise UserNotFound(identifier_=user_id)
         user_data.is_active = False
         await session.commit()
-        return None
 
     @staticmethod
     async def update_user(

@@ -5,7 +5,6 @@ from app.db.alchemy.models import User
 
 
 class RoleChecker:
-    def check_permission(allowed_user_id: UUID, user: User) -> bool:
-        if allowed_user_id == user.id:
-            return True
-        raise UserNotAllowed(identifier_=user.id)
+    def check_permission(allowed_user_id: UUID, user: User) -> None:
+        if allowed_user_id != user.id:
+            raise UserNotAllowed(identifier_=user.id)
