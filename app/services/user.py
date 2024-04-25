@@ -30,7 +30,7 @@ class UserService:
     async def user_deactivate(
         self, user_id: UUID, session: AsyncSession, user: User
     ) -> None:
-        if await RoleChecker.check_permission(allowed_user_id=user_id, user=user):
+        if RoleChecker.check_permission(allowed_user_id=user_id, user=user):
             return await self._repo.deactivate_user(user_id=user_id, session=session)
 
     async def user_update(
@@ -38,7 +38,7 @@ class UserService:
     ) -> GetUser:
         if user_data.password:
             user_data.password = Hasher.get_password_hash(user_data.password)
-        if await RoleChecker.check_permission(allowed_user_id=user_id, user=user):
+        if RoleChecker.check_permission(allowed_user_id=user_id, user=user):
             return await self._repo.update_user(
                 user_id=user_id, user_data=user_data, session=session
             )

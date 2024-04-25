@@ -1,37 +1,18 @@
 import jwt
-from fastapi import Depends
 from fastapi.security import HTTPAuthorizationCredentials
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
-from app.core.exceptions import NotAuthorized
-from app.core.hashing import Hasher
-from app.db.postgress import get_session
 from app.schemas.auth import Token
-from app.schemas.user import UserSignIn
-from app.services.user import UserService
 
 
 class JWTSecurity:
-    async def create_jwt_token(
-        user_data: UserSignIn,
-        session: AsyncSession = Depends(get_session),
-        user_service: UserService = Depends(UserService),
-    ) -> Token:
-        db_user = await user_service.user_get_by_email(
-            email=user_data.email, session=session
+    async def create_jwt_token(payload_data: Token) -> Token:
+        token = jwt.encode(
+            payload=payload_data,
+            key=settings.jwt_security_key,
+            algorithm=settings.jwt_algorithm,
         )
-        if Hasher.verify_password(
-            plain_password=user_data.password, hashed_password=db_user.password
-        ):
-            payload_data = {"email": user_data.email}
-            token = jwt.encode(
-                payload=payload_data,
-                key=settings.jwt_security_key,
-                algorithm=settings.jwt_algorithm,
-            )
-            return Token(token=token)
-        raise NotAuthorized()
+        return Token(token=token)
 
     async def get_user_by_token(token: HTTPAuthorizationCredentials):
         return jwt.decode(
