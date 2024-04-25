@@ -6,7 +6,7 @@ from app.schemas.auth import Token
 
 
 class JWTSecurity:
-    async def create_jwt_token(payload_data: Token) -> Token:
+    def create_jwt_token(payload_data: Token) -> Token:
         token = jwt.encode(
             payload=payload_data,
             key=settings.jwt_security_key,
@@ -14,7 +14,7 @@ class JWTSecurity:
         )
         return Token(token=token)
 
-    async def get_user_by_token(token: HTTPAuthorizationCredentials):
+    def get_user_by_token(token: HTTPAuthorizationCredentials):
         return jwt.decode(
             token.credentials,
             key=settings.jwt_security_key,
@@ -23,7 +23,7 @@ class JWTSecurity:
 
 
 class Auth0Security:
-    async def get_user_email(token: HTTPAuthorizationCredentials):
+    def get_user_email(token: HTTPAuthorizationCredentials):
         JWKS_CLIENT = jwt.PyJWKClient(
             f"https://{settings.auth0_domain}/.well-known/jwks.json"
         )
