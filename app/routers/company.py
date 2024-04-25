@@ -12,7 +12,7 @@ from app.services.company import CompanyService
 router = APIRouter(prefix="/company", tags=["Company"])
 
 
-@router.post("/", response_model=CompanyCreate, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=CompanyGet, status_code=status.HTTP_201_CREATED)
 async def company_create(
     company: CompanyCreate,
     session: AsyncSession = Depends(get_session),
@@ -57,4 +57,16 @@ async def company_update(
 ):
     return await company_service.company_update(
         company_id=company_id, company_data=company_data, session=session, user=user
+    )
+
+
+@router.patch("/{company_id}/deactivate", status_code=status.HTTP_204_NO_CONTENT)
+async def company_deactivate(
+    company_id: UUID,
+    session: AsyncSession = Depends(get_session),
+    company_service: CompanyService = Depends(CompanyService),
+    user: User = Depends(get_active_user),
+) -> None:
+    return await company_service.company_deactivate(
+        company_id=company_id, session=session, user=user
     )

@@ -4,7 +4,6 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.exceptions import CompanyNotFound
-from app.core.permissions import RoleChecker
 from app.db.alchemy.models import Company, User
 from app.schemas.company import CompanyCreate, CompanyGet, CompanyUpdate
 
@@ -13,7 +12,7 @@ class CompanyRepos:
     @staticmethod
     async def create_company(
         company: CompanyCreate, session: AsyncSession, user: User
-    ) -> Company:
+    ) -> CompanyGet:
         company = Company(
             owner_id=user.id,
             name=company.name,
@@ -46,8 +45,6 @@ class CompanyRepos:
     ) -> CompanyGet:
         company_in_db = await session.get(Company, company_id)
 
-        RoleChecker.check_permission(allowed_user_id=company_in_db.owner_id, user=user)
-
         if not company_in_db:
             raise CompanyNotFound(identifier_=company_id)
 
@@ -61,9 +58,8 @@ class CompanyRepos:
 
     @staticmethod
     async def deactivate_company(company_id: UUID, session: AsyncSession) -> None:
-        user_data = await session.get(User, company_id)
-        if not user_data or not user_data.visible:
+        company_data = await session.get(Company, company_id)
+        if not company_data or not company_data.visible:
             raise CompanyNotFound(identifier_=company_id)
-        user_data.is_active = False
+        company_data.visible = False
         await session.commit()
-        return None

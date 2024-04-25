@@ -2,6 +2,7 @@ from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.permissions import RoleChecker
 from app.db.alchemy.models import User
 from app.db.alchemy.repos.company import CompanyRepos
 from app.schemas.company import CompanyCreate, CompanyGet, CompanyUpdate
@@ -13,7 +14,7 @@ class CompanyService:
 
     async def company_create(
         self, company: CompanyCreate, session: AsyncSession, user: User
-    ) -> CompanyCreate:
+    ) -> CompanyGet:
         return await self._repo.create_company(
             company=company, session=session, user=user
         )
@@ -35,6 +36,18 @@ class CompanyService:
         session: AsyncSession,
         user: User,
     ) -> CompanyGet:
+        company = await CompanyService.company_get(self, id=company_id, session=session)
+        RoleChecker.check_permission(allowed_user_id=company.owner_id, user=user)
         return await self._repo.update_company(
             company_id=company_id, company_data=company_data, session=session, user=user
+        )
+
+    async def company_deactivate(
+        self, company_id: UUID, session: AsyncSession, user: User
+    ) -> None:
+        company = await CompanyService.company_get(self, id=company_id, session=session)
+        RoleChecker.check_permission(allowed_user_id=company.owner_id, user=user)
+
+        return await self._repo.deactivate_company(
+            company_id=company_id, session=session
         )
