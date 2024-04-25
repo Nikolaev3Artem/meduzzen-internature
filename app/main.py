@@ -5,6 +5,7 @@ from fastapi.responses import JSONResponse
 
 from app.core.config import settings
 from app.core.exceptions import NotAllowed, NotAuthorized, ObjectNotFound
+from app.routers.company import router as company_router
 from app.routers.healthcheck import router as health_check_router
 from app.routers.jwt_auth import router as auth_router
 from app.routers.user import router as user_router
@@ -47,6 +48,7 @@ async def unathorized_exception_handler(request: Request, exc: ObjectNotFound):
 app.include_router(health_check_router)
 app.include_router(user_router)
 app.include_router(auth_router)
+app.include_router(company_router)
 
 if __name__ == "__main__":
     uvicorn.run(

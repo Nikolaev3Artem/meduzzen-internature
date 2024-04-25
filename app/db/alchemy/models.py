@@ -23,3 +23,12 @@ class User(IDBase):
     password: Mapped[str] = mapped_column(String)
     username: Mapped[str] = mapped_column(String(100))
     is_active: Mapped[bool] = mapped_column(Boolean(), default=True)
+
+
+class Company(IDBase):
+    __tablename__ = "company"
+
+    owner_id: Mapped[int] = mapped_column(UUID(as_uuid=True))
+    name: Mapped[str] = mapped_column(String(100), unique=True)
+    description: Mapped[str] = mapped_column(String(500))
+    visible: Mapped[bool] = mapped_column(Boolean(), default=True)
