@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.core.config import settings
-from app.core.exceptions import ObjectNotFound
+from app.core.exceptions import NotAllowed, ObjectNotFound
 from app.routers.healthcheck import router as health_check_router
 from app.routers.jwt_auth import router as auth_router
 from app.routers.user import router as user_router
@@ -24,6 +24,14 @@ app.add_middleware(
 async def not_found_exception_handler(request: Request, exc: ObjectNotFound):
     return JSONResponse(
         status_code=status.HTTP_404_NOT_FOUND,
+        content={"message": exc.msg},
+    )
+
+
+@app.exception_handler(NotAllowed)
+async def not_allowed_exception_handler(request: Request, exc: ObjectNotFound):
+    return JSONResponse(
+        status_code=status.HTTP_403_FORBIDDEN,
         content={"message": exc.msg},
     )
 
