@@ -41,7 +41,7 @@ class CompanyRepos:
 
     @staticmethod
     async def update_company(
-        company_id: UUID, company_data: CompanyUpdate, session: AsyncSession, user: User
+        company_id: UUID, company_data: CompanyUpdate, session: AsyncSession
     ) -> CompanyGet:
         company_in_db = await session.get(Company, company_id)
 

@@ -39,7 +39,7 @@ class CompanyService:
         company = await CompanyService.company_get(self, id=company_id, session=session)
         RoleChecker.check_permission(allowed_user_id=company.owner_id, user=user)
         return await self._repo.update_company(
-            company_id=company_id, company_data=company_data, session=session, user=user
+            company_id=company_id, company_data=company_data, session=session
         )
 
     async def company_deactivate(

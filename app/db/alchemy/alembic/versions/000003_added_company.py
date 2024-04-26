@@ -22,11 +22,17 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade() -> None:
     op.create_table(
         "company",
-        sa.Column("id", UUID(as_uuid=True), primary_key=True, default=uuid.uuid4),
-        sa.Column("owner_id", UUID(as_uuid=True)),
-        sa.Column("name", sa.String(100), unique=True),
-        sa.Column("description", sa.String(500)),
-        sa.Column("visible", sa.Boolean, default=True),
+        sa.Column(
+            "id",
+            UUID(as_uuid=True),
+            primary_key=True,
+            default=uuid.uuid4,
+            nullable=False,
+        ),
+        sa.Column("owner_id", UUID(as_uuid=True), nullable=False),
+        sa.Column("name", sa.String(100), unique=True, nullable=False),
+        sa.Column("description", sa.String(500), nullable=True),
+        sa.Column("visible", sa.Boolean, default=True, nullable=False),
     )
 
 
