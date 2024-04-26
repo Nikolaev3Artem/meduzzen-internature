@@ -30,6 +30,7 @@ def upgrade() -> None:
             nullable=False,
         ),
         sa.Column("owner_id", UUID(as_uuid=True), nullable=False),
+        sa.ForeignKeyConstraint(["owner_id"], ["users.id"]),
         sa.Column("name", sa.String(100), unique=True, nullable=False),
         sa.Column("description", sa.String(500), nullable=True),
         sa.Column("visible", sa.Boolean, default=True, nullable=False),
