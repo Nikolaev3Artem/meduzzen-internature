@@ -3,6 +3,8 @@ from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.hashing import Hasher
+from app.core.permissions import RoleChecker
+from app.db.alchemy.models import User
 from app.db.alchemy.repos.user import UserRepos
 from app.schemas.user import GetUser, UserSignUp, UserUpdate
 
@@ -25,13 +27,21 @@ class UserService:
     async def user_get_by_email(self, email: str, session: AsyncSession) -> GetUser:
         return await self._repo.get_user_by_email(email=email, session=session)
 
-    async def user_delete(self, id: UUID, session: AsyncSession) -> None:
-        return await self._repo.delete_user(id=id, session=session)
+    async def user_deactivate(
+        self, user_id: UUID, session: AsyncSession, user: User
+    ) -> None:
+        RoleChecker.check_permission(allowed_user_id=user_id, user=user)
+
+        return await self._repo.deactivate_user(user_id=user_id, session=session)
 
     async def user_update(
-        self, id: UUID, user: UserUpdate, session: AsyncSession
+        self, user_id: UUID, user_data: UserUpdate, session: AsyncSession, user: User
     ) -> GetUser:
-        if user.password:
-            user.password = Hasher.get_password_hash(user.password)
+        if user_data.password:
+            user_data.password = Hasher.get_password_hash(user_data.password)
 
-        return await self._repo.update_user(id=id, user=user, session=session)
+        RoleChecker.check_permission(allowed_user_id=user_id, user=user)
+
+        return await self._repo.update_user(
+            user_id=user_id, user_data=user_data, session=session
+        )
