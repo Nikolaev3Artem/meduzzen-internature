@@ -45,10 +45,10 @@ async def unathorized_exception_handler(request: Request, exc: ObjectNotFound):
     )
 
 
-app.include_router(health_check_router)
-app.include_router(user_router)
 app.include_router(auth_router)
+app.include_router(user_router)
 app.include_router(company_router)
+app.include_router(health_check_router)
 
 if __name__ == "__main__":
     uvicorn.run(

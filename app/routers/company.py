@@ -5,7 +5,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.alchemy.models import User
 from app.db.postgress import get_session
-from app.schemas.company import CompanyCreate, CompanyGet, CompanyUpdate
+from app.schemas.company import (
+    CompanyCreate,
+    CompanyGet,
+    CompanyUpdate,
+    CreateInvitation,
+    GetInvitation,
+)
+from app.schemas.user import GetJoinRequest
 from app.services.auth_jwt import get_active_user
 from app.services.company import CompanyService
 
@@ -69,4 +76,114 @@ async def company_deactivate(
 ) -> None:
     return await company_service.company_deactivate(
         company_id=company_id, session=session, user=user
+    )
+
+
+@router.post("/{company_id}/send_invite/")
+async def company_send_invite(
+    company_id: UUID,
+    create_invitation: CreateInvitation,
+    company_service: CompanyService = Depends(CompanyService),
+    user: User = Depends(get_active_user),
+    session: AsyncSession = Depends(get_session),
+) -> GetInvitation:
+    return await company_service.company_create_invitation(
+        company_id=company_id,
+        create_invitation=create_invitation,
+        user=user,
+        session=session,
+    )
+
+
+@router.delete(
+    "/{company_id}/cancel_invite/{invitation_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def company_delete_invite(
+    company_id: UUID,
+    invitation_id: UUID,
+    company_service: CompanyService = Depends(CompanyService),
+    user: User = Depends(get_active_user),
+    session: AsyncSession = Depends(get_session),
+) -> None:
+    return await company_service.company_delete_invitation(
+        company_id=company_id, invitation_id=invitation_id, user=user, session=session
+    )
+
+
+@router.delete("/{company_id}/kick/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def company_kick_member(
+    company_id: UUID,
+    user_id: UUID,
+    company_service: CompanyService = Depends(CompanyService),
+    user: User = Depends(get_active_user),
+    session: AsyncSession = Depends(get_session),
+) -> None:
+    return await company_service.company_kick_member(
+        company_id=company_id, user=user, user_id=user_id, session=session
+    )
+
+
+@router.get("/{company_id}/invitations")
+async def company_invitations(
+    company_id: UUID,
+    company_service: CompanyService = Depends(CompanyService),
+    user: User = Depends(get_active_user),
+    session: AsyncSession = Depends(get_session),
+) -> list[GetInvitation]:
+    return await company_service.company_invitations_list(
+        company_id=company_id, user=user, session=session
+    )
+
+
+@router.post("/{company_id}/accept_join_request/{invitation_id}")
+async def company_accept_join_request(
+    company_id: UUID,
+    invitation_id: UUID,
+    company_service: CompanyService = Depends(CompanyService),
+    user: User = Depends(get_active_user),
+    session: AsyncSession = Depends(get_session),
+) -> None:
+    return await company_service.accept_join_request(
+        company_id=company_id, invitation_id=invitation_id, user=user, session=session
+    )
+
+
+@router.delete(
+    "/{company_id}/reject_join_request/{invitation_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def company_reject_join_request(
+    company_id: UUID,
+    invitation_id: UUID,
+    company_service: CompanyService = Depends(CompanyService),
+    user: User = Depends(get_active_user),
+    session: AsyncSession = Depends(get_session),
+) -> None:
+    return await company_service.reject_join_request(
+        company_id=company_id, invitation_id=invitation_id, user=user, session=session
+    )
+
+
+@router.get("/{company_id}/join_requests")
+async def company_join_requests(
+    company_id: UUID,
+    company_service: CompanyService = Depends(CompanyService),
+    user: User = Depends(get_active_user),
+    session: AsyncSession = Depends(get_session),
+) -> list[GetJoinRequest]:
+    return await company_service.company_join_requests_list(
+        company_id=company_id, user=user, session=session
+    )
+
+
+@router.get("/{company_id}/members")
+async def company_members(
+    company_id: UUID,
+    company_service: CompanyService = Depends(CompanyService),
+    user: User = Depends(get_active_user),
+    session: AsyncSession = Depends(get_session),
+) -> list[GetInvitation]:
+    return await company_service.company_get_members(
+        company_id=company_id, user=user, session=session
     )
