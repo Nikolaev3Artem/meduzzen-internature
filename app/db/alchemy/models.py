@@ -11,7 +11,7 @@ class Base(DeclarativeBase):
 
 class IDBase(Base):
     __abstract__ = True
-    id: Mapped[int] = mapped_column(
+    id: Mapped[UUID] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, nullable=False
     )
 
@@ -28,9 +28,10 @@ class User(IDBase):
 class Company(IDBase):
     __tablename__ = "company"
 
-    owner_id: Mapped[int] = mapped_column(
+    owner_id: Mapped[UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False
     )
-    name: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
+    name: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
     description: Mapped[str] = mapped_column(String(500), nullable=True)
     visible: Mapped[bool] = mapped_column(Boolean(), default=True, nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean(), default=True, nullable=False)

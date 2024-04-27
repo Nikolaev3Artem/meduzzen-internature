@@ -4,7 +4,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.core.config import settings
-from app.core.exceptions import NotAllowed, NotAuthorized, ObjectNotFound
+from app.core.exceptions import (
+    IntegritiError,
+    NotAllowed,
+    NotAuthorized,
+    ObjectNotFound,
+)
 from app.routers.company import router as company_router
 from app.routers.healthcheck import router as health_check_router
 from app.routers.jwt_auth import router as auth_router
@@ -41,6 +46,14 @@ async def not_allowed_exception_handler(request: Request, exc: ObjectNotFound):
 async def unathorized_exception_handler(request: Request, exc: ObjectNotFound):
     return JSONResponse(
         status_code=status.HTTP_401_UNAUTHORIZED,
+        content={"message": exc.msg},
+    )
+
+
+@app.exception_handler(IntegritiError)
+async def integrity_error_exception_handler(request: Request, exc: ObjectNotFound):
+    return JSONResponse(
+        status_code=status.HTTP_400_BAD_REQUEST,
         content={"message": exc.msg},
     )
 

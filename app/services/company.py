@@ -27,7 +27,7 @@ class CompanyService:
         )
 
     async def company_get(self, id: UUID, session: AsyncSession) -> CompanyGet:
-        return await self._repo.get_company(id=id, session=session)
+        return await self._repo.get_company(id=id, session=session, get_hidden=False)
 
     async def company_update(
         self,
@@ -36,7 +36,9 @@ class CompanyService:
         session: AsyncSession,
         user: User,
     ) -> CompanyGet:
-        company = await CompanyService.company_get(self, id=company_id, session=session)
+        company = await self._repo.get_company(
+            id=company_id, session=session, get_hidden=True
+        )
         RoleChecker.check_permission(allowed_user_id=company.owner_id, user=user)
         return await self._repo.update_company(
             company_id=company_id, company_data=company_data, session=session
@@ -45,7 +47,9 @@ class CompanyService:
     async def company_deactivate(
         self, company_id: UUID, session: AsyncSession, user: User
     ) -> None:
-        company = await CompanyService.company_get(self, id=company_id, session=session)
+        company = await self._repo.get_company(
+            id=company_id, session=session, get_hidden=True
+        )
         RoleChecker.check_permission(allowed_user_id=company.owner_id, user=user)
 
         return await self._repo.deactivate_company(
