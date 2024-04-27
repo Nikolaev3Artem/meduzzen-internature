@@ -60,7 +60,7 @@ async def company_update(
     )
 
 
-@router.delete("/{company_id}/delete", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{company_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def company_delete(
     company_id: UUID,
     session: AsyncSession = Depends(get_session),
