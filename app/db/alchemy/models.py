@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import Boolean, String
+from sqlalchemy import Boolean, ForeignKey, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
@@ -28,7 +28,9 @@ class User(IDBase):
 class Company(IDBase):
     __tablename__ = "company"
 
-    owner_id: Mapped[int] = mapped_column(UUID(as_uuid=True), nullable=False)
+    owner_id: Mapped[int] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+    )
     name: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
     description: Mapped[str] = mapped_column(String(500), nullable=True)
     visible: Mapped[bool] = mapped_column(Boolean(), default=True, nullable=False)
