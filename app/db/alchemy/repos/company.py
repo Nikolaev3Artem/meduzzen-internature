@@ -82,7 +82,7 @@ class CompanyRepos:
         return company_in_db
 
     @staticmethod
-    async def deactivate_company(company_id: UUID, session: AsyncSession) -> None:
+    async def delete_company(company_id: UUID, session: AsyncSession) -> None:
         company_data = await session.get(Company, company_id)
 
         if not company_data:
