@@ -34,4 +34,3 @@ class Company(IDBase):
     name: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
     description: Mapped[str] = mapped_column(String(500), nullable=True)
     visible: Mapped[bool] = mapped_column(Boolean(), default=True, nullable=False)
-    is_active: Mapped[bool] = mapped_column(Boolean(), default=True, nullable=False)

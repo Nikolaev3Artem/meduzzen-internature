@@ -34,7 +34,6 @@ def upgrade() -> None:
         sa.Column("name", sa.String(100), nullable=False, unique=True),
         sa.Column("description", sa.String(500), nullable=True),
         sa.Column("visible", sa.Boolean, default=True, nullable=False),
-        sa.Column("is_active", sa.Boolean, default=True, nullable=False),
     )
 
 
