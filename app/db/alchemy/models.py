@@ -26,8 +26,10 @@ class RequestStatus(enum.Enum):
 class CompanyRequests(IDBase):
     __tablename__ = "company_requests"
 
-    user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"))
-    company_id: Mapped[UUID] = mapped_column(ForeignKey("company.id"))
+    user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    company_id: Mapped[UUID] = mapped_column(
+        ForeignKey("company.id", ondelete="CASCADE")
+    )
     status: Mapped[Enum] = mapped_column(Enum(RequestStatus))
 
 

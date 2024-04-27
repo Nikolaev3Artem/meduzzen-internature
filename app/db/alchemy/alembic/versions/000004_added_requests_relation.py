@@ -27,8 +27,8 @@ def upgrade() -> None:
         sa.Column("id", UUID(as_uuid=True), primary_key=True, default=uuid.uuid4),
         sa.Column("user_id", UUID(as_uuid=True)),
         sa.Column("company_id", UUID(as_uuid=True)),
-        sa.ForeignKeyConstraint(["user_id"], ["users.id"]),
-        sa.ForeignKeyConstraint(["company_id"], ["company.id"]),
+        sa.ForeignKeyConstraint(["user_id"], ["users.id"], ondelete="CASCADE"),
+        sa.ForeignKeyConstraint(["company_id"], ["company.id"], ondelete="CASCADE"),
         sa.Column("status", ENUM(RequestStatus)),
     )
 
