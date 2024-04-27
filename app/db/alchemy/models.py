@@ -13,7 +13,7 @@ class Base(DeclarativeBase):
 class IDBase(Base):
     __abstract__ = True
     id: Mapped[UUID] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, nullable=False
     )
 
 
@@ -34,16 +34,18 @@ class CompanyRequests(IDBase):
 class User(IDBase):
     __tablename__ = "users"
 
-    email: Mapped[str] = mapped_column(String(80), unique=True)
-    password: Mapped[str] = mapped_column(String)
-    username: Mapped[str] = mapped_column(String(100))
-    is_active: Mapped[bool] = mapped_column(Boolean(), default=True)
+    email: Mapped[str] = mapped_column(String(80), unique=True, nullable=False)
+    password: Mapped[str] = mapped_column(String, nullable=False)
+    username: Mapped[str] = mapped_column(String(100), nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean(), default=True, nullable=False)
 
 
 class Company(IDBase):
     __tablename__ = "company"
 
-    owner_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True))
-    name: Mapped[str] = mapped_column(String(100), unique=True)
-    description: Mapped[str] = mapped_column(String(500))
-    visible: Mapped[bool] = mapped_column(Boolean(), default=True)
+    owner_id: Mapped[UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+    )
+    name: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
+    description: Mapped[str] = mapped_column(String(500), nullable=True)
+    visible: Mapped[bool] = mapped_column(Boolean(), default=True, nullable=False)
