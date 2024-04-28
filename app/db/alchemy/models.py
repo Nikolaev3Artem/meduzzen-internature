@@ -1,9 +1,10 @@
-import enum
 import uuid
 
 from sqlalchemy import Boolean, Enum, ForeignKey, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+
+from app.core.enums import RequestStatus
 
 
 class Base(DeclarativeBase):
@@ -15,22 +16,6 @@ class IDBase(Base):
     id: Mapped[UUID] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, nullable=False
     )
-
-
-class RequestStatus(enum.Enum):
-    MEMBER = "Member"
-    INVITATION = "Invitation"
-    JOIN_REQUEST = "Join_Request"
-
-
-class CompanyRequests(IDBase):
-    __tablename__ = "company_requests"
-
-    user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
-    company_id: Mapped[UUID] = mapped_column(
-        ForeignKey("company.id", ondelete="CASCADE")
-    )
-    status: Mapped[Enum] = mapped_column(Enum(RequestStatus))
 
 
 class User(IDBase):
@@ -51,3 +36,15 @@ class Company(IDBase):
     name: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
     description: Mapped[str] = mapped_column(String(500), nullable=True)
     visible: Mapped[bool] = mapped_column(Boolean(), default=True, nullable=False)
+
+
+class CompanyRequests(IDBase):
+    __tablename__ = "company_requests"
+
+    user_id: Mapped[UUID] = mapped_column(
+        UUID, ForeignKey("users.id", ondelete="CASCADE")
+    )
+    company_id: Mapped[UUID] = mapped_column(
+        UUID, ForeignKey("company.id", ondelete="CASCADE")
+    )
+    status: Mapped[Enum] = mapped_column(Enum(RequestStatus))

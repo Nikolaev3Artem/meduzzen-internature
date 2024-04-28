@@ -3,17 +3,10 @@ from uuid import UUID
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.exceptions import InvitationNotFound, UserNotFound
+from app.core.exceptions import UserNotFound
 from app.core.hashing import Hasher
-from app.db.alchemy.models import CompanyRequests, RequestStatus, User
-from app.schemas.user import (
-    CreateJoinRequest,
-    GetInvitation,
-    GetJoinRequest,
-    GetUser,
-    UserSignUp,
-    UserUpdate,
-)
+from app.db.alchemy.models import User
+from app.schemas.user import GetUser, UserSignUp, UserUpdate
 
 
 class UserRepos:
@@ -73,94 +66,3 @@ class UserRepos:
 
         await session.commit()
         return user_in_db
-
-    @staticmethod
-    async def get_invitation_user(
-        invitation_id: UUID, session: AsyncSession
-    ) -> GetInvitation:
-        invitations_list = await session.get(CompanyRequests, invitation_id)
-        return invitations_list
-
-    @staticmethod
-    async def invitation_list_user(
-        user_id: UUID, session: AsyncSession
-    ) -> list[GetInvitation]:
-        invitations_list = await session.execute(
-            select(CompanyRequests).where(
-                CompanyRequests.user_id == user_id,
-                CompanyRequests.status == RequestStatus.INVITATION,
-            )
-        )
-        return invitations_list.scalars().all()
-
-    @staticmethod
-    async def accept_invitation_user(
-        invitation_id: UUID, session: AsyncSession
-    ) -> None:
-        invitation = await session.get(CompanyRequests, invitation_id)
-        if not invitation:
-            raise InvitationNotFound(identifier_=invitation_id)
-        invitation.status = RequestStatus.MEMBER
-        await session.commit()
-
-    @staticmethod
-    async def reject_invitation_user(
-        invitation_id: UUID, session: AsyncSession
-    ) -> None:
-        invitation = await session.get(CompanyRequests, invitation_id)
-        if not invitation:
-            raise InvitationNotFound(identifier_=invitation_id)
-
-        await session.delete(invitation)
-        await session.commit()
-
-    @staticmethod
-    async def user_create_join_request(
-        user_id: UUID, session: AsyncSession, create_join_request: CreateJoinRequest
-    ) -> GetJoinRequest:
-        user_join_request = CompanyRequests(
-            company_id=create_join_request.company_id,
-            user_id=user_id,
-            status=RequestStatus.JOIN_REQUEST,
-        )
-        session.add(user_join_request)
-        await session.commit()
-        await session.refresh(user_join_request)
-        return user_join_request
-
-    @staticmethod
-    async def user_list_join_request(
-        user_id: UUID, session: AsyncSession
-    ) -> list[GetJoinRequest]:
-        invitations_list = await session.execute(
-            select(CompanyRequests).where(
-                CompanyRequests.user_id == user_id,
-                CompanyRequests.status == RequestStatus.JOIN_REQUEST,
-            )
-        )
-        return invitations_list.scalars().all()
-
-    @staticmethod
-    async def user_cancel_join_request(
-        invitation_id: UUID, session: AsyncSession
-    ) -> None:
-        join_request = await session.get(CompanyRequests, invitation_id)
-        if not join_request:
-            raise InvitationNotFound(identifier_=invitation_id)
-
-        await session.delete(join_request)
-        await session.commit()
-
-    @staticmethod
-    async def user_company_leave(invitation_id: UUID, session: AsyncSession) -> None:
-        join_request = await session.execute(
-            select(CompanyRequests).where(
-                CompanyRequests.id == invitation_id,
-                CompanyRequests.status == RequestStatus.MEMBER,
-            )
-        )
-        if not join_request:
-            raise InvitationNotFound(identifier_=invitation_id)
-
-        await session.delete(join_request.scalar())
-        await session.commit()

@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from alembic import op
 from sqlalchemy.dialects.postgresql import ENUM, UUID
 
-from app.db.alchemy.models import RequestStatus
+from app.core.enums import RequestStatus
 
 # revision identifiers, used by Alembic.
 revision: str = "000004"
