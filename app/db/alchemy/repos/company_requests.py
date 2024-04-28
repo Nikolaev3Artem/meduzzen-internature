@@ -5,10 +5,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.enums import RequestStatus
 from app.core.exceptions import (
+    AdminNotFound,
     CompanyNotFound,
     InvitationAlreadyExists,
     InvitationNotFound,
     MemberNotFound,
+    UserNotFound,
 )
 from app.db.alchemy.models import Company, CompanyRequests, User
 from app.schemas.company import GetInvitation
@@ -125,6 +127,60 @@ class CompanyRequestsRepos:
 
         await session.delete(invitation)
         await session.commit()
+
+    @staticmethod
+    async def company_promote_to_admin(
+        company_id: UUID, user_id: UUID, session: AsyncSession
+    ) -> None:
+        invitation = await session.execute(
+            select(CompanyRequests).where(
+                CompanyRequests.company_id == company_id,
+                CompanyRequests.user_id == user_id,
+            )
+        )
+        invitation = invitation.scalar()
+
+        if not invitation:
+            raise UserNotFound(identifier_=user_id)
+        if invitation.status != RequestStatus.MEMBER:
+            raise MemberNotFound(identifier_=user_id)
+
+        invitation.status = RequestStatus.ADMIN
+        await session.commit()
+
+    @staticmethod
+    async def company_demotion_admin(
+        company_id: UUID, user_id: UUID, session: AsyncSession
+    ) -> None:
+        invitation = await session.execute(
+            select(CompanyRequests).where(
+                CompanyRequests.company_id == company_id,
+                CompanyRequests.user_id == user_id,
+            )
+        )
+        invitation = invitation.scalar()
+
+        if not invitation:
+            raise UserNotFound(identifier_=user_id)
+
+        if invitation.status != RequestStatus.ADMIN:
+            raise AdminNotFound(identifier_=user_id)
+
+        invitation.status = RequestStatus.MEMBER
+        await session.commit()
+
+    @staticmethod
+    async def company_get_admins_list(company_id: UUID, session: AsyncSession) -> None:
+        invitation = await session.execute(
+            select(User)
+            .join(CompanyRequests)
+            .where(CompanyRequests.status == RequestStatus.ADMIN)
+        )
+
+        if not invitation:
+            raise InvitationNotFound(identifier_=invitation.id)
+
+        return invitation.scalars().all()
 
     @staticmethod
     async def get_invitation_user(

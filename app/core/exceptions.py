@@ -43,6 +43,11 @@ class MemberNotFound(ObjectNotFound):
         super().__init__(model_name=model_name, identifier_=identifier_)
 
 
+class AdminNotFound(ObjectNotFound):
+    def __init__(self, identifier_: str, model_name: str = "Company Admin") -> None:
+        super().__init__(model_name=model_name, identifier_=identifier_)
+
+
 class CompanyNotFound(ObjectNotFound):
     def __init__(self, identifier_: str, model_name: str = "Company") -> None:
         super().__init__(model_name=model_name, identifier_=identifier_)
