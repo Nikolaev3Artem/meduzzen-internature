@@ -60,13 +60,13 @@ async def company_update(
     )
 
 
-@router.patch("/{company_id}/deactivate", status_code=status.HTTP_204_NO_CONTENT)
-async def company_deactivate(
+@router.delete("/{company_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def company_delete(
     company_id: UUID,
     session: AsyncSession = Depends(get_session),
     company_service: CompanyService = Depends(CompanyService),
     user: User = Depends(get_active_user),
 ) -> None:
-    return await company_service.company_deactivate(
+    return await company_service.company_delete(
         company_id=company_id, session=session, user=user
     )

@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import Boolean, Enum, ForeignKey, String
+from sqlalchemy import Boolean, Enum, ForeignKey, String, UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
@@ -48,3 +48,4 @@ class CompanyRequests(IDBase):
         UUID, ForeignKey("company.id", ondelete="CASCADE")
     )
     status: Mapped[Enum] = mapped_column(Enum(RequestStatus))
+    __table_args__ = (UniqueConstraint("user_id", "company_id", name="uix_1"),)
