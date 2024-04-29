@@ -11,10 +11,11 @@ from app.core.exceptions import (
     ObjectNotFound,
 )
 from app.routers.company import router as company_router
-from app.routers.company_requests import company_requests_router, user_requests_router
+from app.routers.company_requests import company_requests_router
 from app.routers.healthcheck import router as health_check_router
 from app.routers.jwt_auth import router as auth_router
 from app.routers.user import router as user_router
+from app.routers.user_requests import user_requests_router
 
 app = FastAPI()
 

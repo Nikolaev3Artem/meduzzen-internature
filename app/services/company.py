@@ -44,7 +44,7 @@ class CompanyService:
             company_id=company_id, company_data=company_data, session=session
         )
 
-    async def company_deactivate(
+    async def company_delete(
         self, company_id: UUID, session: AsyncSession, user: User
     ) -> None:
         company = await self._repo.get_company(
@@ -52,6 +52,4 @@ class CompanyService:
         )
         RoleChecker.check_permission(allowed_user_id=company.owner_id, user=user)
 
-        return await self._repo.deactivate_company(
-            company_id=company_id, session=session
-        )
+        return await self._repo.delete_company(company_id=company_id, session=session)

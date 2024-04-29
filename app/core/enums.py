@@ -2,6 +2,6 @@ import enum
 
 
 class RequestStatus(enum.Enum):
-    MEMBER = "Member"
-    INVITATION = "Invitation"
-    JOIN_REQUEST = "Join_Request"
+    MEMBER = "member"
+    INVITATION = "invitation"
+    JOIN_REQUEST = "join_request"

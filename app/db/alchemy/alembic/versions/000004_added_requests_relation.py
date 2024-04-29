@@ -12,8 +12,6 @@ import sqlalchemy as sa
 from alembic import op
 from sqlalchemy.dialects.postgresql import ENUM, UUID
 
-from app.core.enums import RequestStatus
-
 # revision identifiers, used by Alembic.
 revision: str = "000004"
 down_revision: Union[str, None] = "000003"
@@ -29,7 +27,8 @@ def upgrade() -> None:
         sa.Column("company_id", UUID(as_uuid=True)),
         sa.ForeignKeyConstraint(["user_id"], ["users.id"], ondelete="CASCADE"),
         sa.ForeignKeyConstraint(["company_id"], ["company.id"], ondelete="CASCADE"),
-        sa.Column("status", ENUM(RequestStatus)),
+        sa.Column(ENUM("member", "invitation", "join_request", name="status")),
+        sa.UniqueConstraint("user_id", "company_id", name="unique_invites"),
     )
 
 
