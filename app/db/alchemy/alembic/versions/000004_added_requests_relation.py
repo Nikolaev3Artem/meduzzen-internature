@@ -27,10 +27,14 @@ def upgrade() -> None:
         sa.Column("company_id", UUID(as_uuid=True)),
         sa.ForeignKeyConstraint(["user_id"], ["users.id"], ondelete="CASCADE"),
         sa.ForeignKeyConstraint(["company_id"], ["company.id"], ondelete="CASCADE"),
-        sa.Column(ENUM("member", "invitation", "join_request", "admin", name="status")),
+        sa.Column(
+            "status",
+            ENUM("member", "invitation", "join_request", "admin", name="status"),
+        ),
         sa.UniqueConstraint("user_id", "company_id", name="unique_invites"),
     )
 
 
 def downgrade() -> None:
     op.drop_table("company_requests")
+    op.execute("DROP TYPE status")
