@@ -33,9 +33,9 @@ companies = [
 ]
 
 requests = [
-    {"status": RequestStatus.INVITATION},
-    {"status": RequestStatus.JOIN_REQUEST},
-    {"status": RequestStatus.MEMBER},
+    {"status": RequestStatus.INVITATION.value},
+    {"status": RequestStatus.JOIN_REQUEST.value},
+    {"status": RequestStatus.MEMBER.value},
 ]
 
 test_company_create = CompanyCreate(name="test4", description="test_desc4")

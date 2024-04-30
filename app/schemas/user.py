@@ -28,23 +28,3 @@ class GetUser(UserBase):
 
 class UserDetail(GetUser):
     pass
-
-
-class InvitationBase(BaseModel):
-    company_id: UUID
-
-
-class GetInvitation(InvitationBase):
-    id: UUID
-
-
-class JoinRequestsBase(BaseModel):
-    company_id: UUID
-
-
-class CreateJoinRequest(JoinRequestsBase):
-    ...
-
-
-class GetJoinRequest(JoinRequestsBase):
-    id: UUID

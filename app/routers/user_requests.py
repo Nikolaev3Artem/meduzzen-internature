@@ -5,7 +5,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.alchemy.models import User
 from app.db.postgress import get_session
-from app.schemas.user import GetJoinRequest, GetUser
+from app.schemas.user import GetUser
+from app.schemas.user_requests import GetJoinRequest
 from app.services.auth_jwt import get_active_user
 from app.services.user_requests import UserRequestsService
 
@@ -13,7 +14,7 @@ user_requests_router = APIRouter(prefix="/user", tags=["User Requests"])
 
 
 @user_requests_router.post(
-    "/{invitation_id}/accept_invite", status_code=status.HTTP_201_CREATED
+    "/{invitation_id}/accept_invite", status_code=status.HTTP_200_OK
 )
 async def user_accept_invitation(
     invitation_id: UUID,

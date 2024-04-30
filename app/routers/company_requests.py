@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.alchemy.models import User
 from app.db.postgress import get_session
-from app.schemas.company import GetInvitation
+from app.schemas.company_requests import GetInvitation
 from app.schemas.user import GetUser
 from app.services.auth_jwt import get_active_user
 from app.services.company_requests import CompanyRequestsService
@@ -49,7 +49,7 @@ async def company_delete_invite(
 
 @company_requests_router.post(
     "/{company_id}/accept_join_request/{invitation_id}",
-    status_code=status.HTTP_201_CREATED,
+    status_code=status.HTTP_200_OK,
 )
 async def company_accept_join_request(
     company_id: UUID,

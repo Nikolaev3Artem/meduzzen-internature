@@ -7,7 +7,8 @@ from app.core.permissions import RoleChecker
 from app.db.alchemy.models import RequestStatus, User
 from app.db.alchemy.repos.company import CompanyRepos
 from app.db.alchemy.repos.user_requests import UserRequestsRepos
-from app.schemas.user import GetJoinRequest, GetUser
+from app.schemas.user import GetUser
+from app.schemas.user_requests import GetJoinRequest
 
 
 class UserRequestsService:
