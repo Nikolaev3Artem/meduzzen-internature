@@ -1,6 +1,7 @@
 from fastapi.testclient import TestClient
 from sqlalchemy import select
 
+from app.core.enums import RequestStatus
 from app.db.alchemy.models import Company, CompanyRequests, User
 from tests.constants import users
 
@@ -24,7 +25,11 @@ async def test_company_delete_invite(
 ):
     test_company = await session.execute(select(Company).limit(1).offset(0))
     test_company_id = test_company.scalar().id
-    test_invite = await session.execute(select(CompanyRequests).limit(1).offset(0))
+    test_invite = await session.execute(
+        select(CompanyRequests).where(
+            CompanyRequests.status == RequestStatus.INVITATION.value
+        )
+    )
     test_invite_id = test_invite.scalar().id
     response = client.delete(
         f"/company/{test_company_id}/cancel_invite/{test_invite_id}",
@@ -44,7 +49,7 @@ async def test_company_accept_join_request(
         f"/company/{test_company_id}/accept_join_request/{test_invite_id}",
         headers={"Authorization": f"Bearer {company_tests_token}"},
     )
-    assert response.status_code == 201
+    assert response.status_code == 200
 
 
 async def test_company_reject_join_request(

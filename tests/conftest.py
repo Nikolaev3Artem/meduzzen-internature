@@ -41,7 +41,7 @@ async def prepare_database():
 
 
 @fixture(scope="function")
-async def fill_database(session, client):
+async def fill_database(session):
     await session.execute(insert(User).values(users))
     await session.commit()
     test_user = await session.execute(select(User).limit(1).offset(0))
@@ -64,7 +64,7 @@ async def fill_database(session, client):
     yield
 
 
-@fixture
+@fixture(scope="function")
 async def company_tests_token(session, client: TestClient):
     response = client.post(
         "/auth/login",
@@ -77,7 +77,7 @@ async def company_tests_token(session, client: TestClient):
     yield token
 
 
-@fixture
+@fixture(scope="function")
 async def user_tests_token(session, client: TestClient):
     response = client.post(
         "/auth/login",

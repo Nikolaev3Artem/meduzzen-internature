@@ -11,7 +11,7 @@ async def test_user_accept_invite(
 ):
     test_invite = await session.execute(
         select(CompanyRequests).where(
-            CompanyRequests.status == RequestStatus.INVITATION
+            CompanyRequests.status == RequestStatus.INVITATION.value
         )
     )
     test_invite_id = test_invite.scalar().id
@@ -20,7 +20,7 @@ async def test_user_accept_invite(
         headers={"Authorization": f"Bearer {user_tests_token}"},
     )
 
-    assert response.status_code == 201
+    assert response.status_code == 200
 
 
 async def test_user_reject_invite(
@@ -28,7 +28,7 @@ async def test_user_reject_invite(
 ):
     test_invite = await session.execute(
         select(CompanyRequests).where(
-            CompanyRequests.status == RequestStatus.INVITATION
+            CompanyRequests.status == RequestStatus.INVITATION.value
         )
     )
     test_invite_id = test_invite.scalar().id

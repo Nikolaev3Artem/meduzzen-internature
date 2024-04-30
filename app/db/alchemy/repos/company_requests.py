@@ -11,7 +11,7 @@ from app.core.exceptions import (
     MemberNotFound,
 )
 from app.db.alchemy.models import Company, CompanyRequests, User
-from app.schemas.company import GetInvitation
+from app.schemas.company_requests import GetInvitation
 from app.schemas.user import GetUser
 
 
@@ -23,11 +23,10 @@ class CompanyRequestsRepos:
         company_data = await session.get(Company, company_id)
         if not company_data or not company_data.visible:
             raise CompanyNotFound(identifier_=company_id)
-
         company_request = CompanyRequests(
             company_id=company_id,
             user_id=user_id,
-            status=RequestStatus.INVITATION,
+            status=RequestStatus.INVITATION.value,
         )
         session.add(company_request)
         await session.commit()
@@ -40,9 +39,11 @@ class CompanyRequestsRepos:
     ) -> None:
         invitation = await session.get(CompanyRequests, invitation_id)
 
-        if not invitation or invitation.status == RequestStatus.MEMBER:
+        if not invitation:
             raise InvitationNotFound(identifier_=invitation_id)
 
+        if invitation.status != RequestStatus.INVITATION.value:
+            raise InvitationNotFound(identifier_=invitation_id)
         await session.delete(invitation)
         await session.commit()
 
@@ -55,7 +56,7 @@ class CompanyRequestsRepos:
             .join(CompanyRequests)
             .where(
                 CompanyRequests.company_id == company_id,
-                CompanyRequests.status == RequestStatus.INVITATION,
+                CompanyRequests.status == RequestStatus.INVITATION.value,
             )
         )
         return invitations_list.scalars().all()
@@ -69,7 +70,7 @@ class CompanyRequestsRepos:
             .join(CompanyRequests, CompanyRequests.user_id == User.id)
             .where(
                 CompanyRequests.company_id == company_id,
-                CompanyRequests.status == RequestStatus.MEMBER,
+                CompanyRequests.status == RequestStatus.MEMBER.value,
             )
         )
         return members_list.scalars().all()
@@ -82,13 +83,14 @@ class CompanyRequestsRepos:
             select(CompanyRequests).where(
                 CompanyRequests.company_id == company_id,
                 CompanyRequests.user_id == user_id,
-                CompanyRequests.status == RequestStatus.MEMBER,
+                CompanyRequests.status == RequestStatus.MEMBER.value,
             )
         )
+        member = member.scalar()
         if not member:
             raise MemberNotFound(identifier_=user_id)
 
-        await session.delete(member.scalar())
+        await session.delete(member)
         await session.commit()
 
     @staticmethod
@@ -100,7 +102,7 @@ class CompanyRequestsRepos:
             .join(CompanyRequests)
             .where(
                 CompanyRequests.company_id == company_id,
-                CompanyRequests.status == RequestStatus.JOIN_REQUEST,
+                CompanyRequests.status == RequestStatus.JOIN_REQUEST.value,
             )
         )
         return join_requests_list.scalars().all()
@@ -112,7 +114,7 @@ class CompanyRequestsRepos:
         invitation = await session.get(CompanyRequests, invitation_id)
         if not invitation:
             raise InvitationNotFound(identifier_=invitation_id)
-        invitation.status = RequestStatus.MEMBER
+        invitation.status = RequestStatus.MEMBER.value
         await session.commit()
 
     @staticmethod

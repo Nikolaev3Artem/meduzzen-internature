@@ -6,7 +6,7 @@ from app.core.permissions import RoleChecker
 from app.db.alchemy.models import User
 from app.db.alchemy.repos.company import CompanyRepos
 from app.db.alchemy.repos.company_requests import CompanyRequestsRepos
-from app.schemas.company import GetInvitation
+from app.schemas.company_requests import GetInvitation
 from app.schemas.user import GetUser
 
 
