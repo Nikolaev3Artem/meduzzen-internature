@@ -4,7 +4,7 @@ from app.db.alchemy.models import User
 from app.schemas.company import CompanyCreate, CompanyUpdate
 from app.schemas.user import UserSignIn, UserSignUp, UserUpdate
 
-users = [
+users_list = [
     {
         "email": "qwe@gmail.com",
         "username": "test_username1",
@@ -31,7 +31,7 @@ users = [
         "password": Hasher.get_password_hash("test_password6"),
     },
 ]
-companies = [
+companies_list = [
     {"name": "test1", "description": "test_desc1"},
     {"name": "test2", "description": "test_desc2"},
     {"name": "test3", "description": "test_desc3"},

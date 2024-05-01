@@ -10,11 +10,11 @@ from app.db.alchemy.models import Base, Company, CompanyRequests, User
 from app.db.postgress import get_session
 from app.main import app
 from tests.constants import (
-    companies,
+    companies_list,
     requests,
     test_company_owner_login,
     test_user_login,
-    users,
+    users_list,
 )
 
 engine_test = create_async_engine(
@@ -41,27 +41,45 @@ async def prepare_database():
 
 
 @fixture(scope="function")
-async def fill_database(session):
-    await session.execute(insert(User).values(users))
-    await session.commit()
-    test_user = await session.execute(select(User).limit(1).offset(0))
-    test_user_id = test_user.scalar().id
-    for company in companies:
-        company["owner_id"] = test_user_id
-    await session.execute(insert(Company).values(companies))
+async def set_up_users(session):
+    await session.execute(insert(User).values(users_list))
     await session.commit()
 
-    test_users = await session.execute(select(User).limit(4).offset(1))
-    test_users = test_users.scalars().all()
-    test_company = await session.execute(select(Company).limit(1).offset(0))
-    test_company_id = test_company.scalar().id
 
+@fixture(scope="function")
+async def set_up_companies(users, session):
+    for company in companies_list:
+        company["owner_id"] = users[0].id
+    await session.execute(insert(Company).values(companies_list))
+    await session.commit()
+
+
+@fixture(scope="function")
+async def set_up_company_requests(users, companies, session):
     for index, user in enumerate(requests):
-        user["user_id"] = test_users[index].id
-        user["company_id"] = test_company_id
+        user["user_id"] = users[index].id
+        user["company_id"] = companies[0].id
     await session.execute(insert(CompanyRequests).values(requests))
     await session.commit()
     yield
+
+
+@fixture(scope="function", name="users")
+async def users(prepare_database, set_up_users, session):
+    users = await session.execute(select(User))
+    yield users.scalars().all()
+
+
+@fixture(scope="function", name="companies")
+async def companies(prepare_database, set_up_companies, session):
+    companies = await session.execute(select(Company))
+    yield companies.scalars().all()
+
+
+@fixture(scope="function", name="company_requests")
+async def company_requests(prepare_database, set_up_company_requests, session):
+    company_requests = await session.execute(select(CompanyRequests))
+    yield company_requests.scalars().all()
 
 
 @fixture(scope="function")
@@ -87,13 +105,13 @@ async def user_tests_token(session, client: TestClient):
     yield token
 
 
-@fixture
-async def session():
-    async with async_session() as session:
-        yield session
-
-
 @fixture(name="client", scope="session")
 def client_fixture():
     client = TestClient(app)
     yield client
+
+
+@fixture
+async def session():
+    async with async_session() as session:
+        yield session
