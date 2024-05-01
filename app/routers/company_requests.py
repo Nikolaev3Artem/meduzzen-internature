@@ -3,6 +3,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.enums import RequestsMemberRoles
 from app.db.alchemy.models import User
 from app.db.postgress import get_session
 from app.schemas.company_requests import GetInvitation
@@ -135,36 +136,26 @@ async def company_members(
 
 
 @company_requests_router.post(
-    "/{company_id}/{user_id}/admin", status_code=status.HTTP_200_OK
+    "/{company_id}/update_member_role/{user_id}", status_code=status.HTTP_200_OK
 )
-async def company_promote_to_admin(
+async def company_update_member_role(
     company_id: UUID,
     user_id: UUID,
+    member_role: str = Depends(RequestsMemberRoles),
     company_service: CompanyRequestsService = Depends(CompanyRequestsService),
     user: User = Depends(get_active_user),
     session: AsyncSession = Depends(get_session),
 ) -> None:
-    return await company_service.company_promote_to_admin(
-        company_id=company_id, user_id=user_id, user=user, session=session
+    return await company_service.company_update_member_role(
+        company_id=company_id,
+        user_id=user_id,
+        user=user,
+        session=session,
+        member_role=member_role,
     )
 
 
-@company_requests_router.delete(
-    "/{company_id}/{user_id}/admin", status_code=status.HTTP_204_NO_CONTENT
-)
-async def company_demotion_admin(
-    company_id: UUID,
-    user_id: UUID,
-    company_service: CompanyRequestsService = Depends(CompanyRequestsService),
-    user: User = Depends(get_active_user),
-    session: AsyncSession = Depends(get_session),
-) -> None:
-    return await company_service.company_demotion_admin(
-        company_id=company_id, user_id=user_id, user=user, session=session
-    )
-
-
-@company_requests_router.get("/{company_id}/admin", status_code=status.HTTP_200_OK)
+@company_requests_router.get("/{company_id}/admins", status_code=status.HTTP_200_OK)
 async def company_get_admins_list(
     company_id: UUID,
     company_service: CompanyRequestsService = Depends(CompanyRequestsService),

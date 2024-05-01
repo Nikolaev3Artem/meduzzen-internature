@@ -29,7 +29,7 @@ def upgrade() -> None:
         sa.ForeignKeyConstraint(["company_id"], ["company.id"], ondelete="CASCADE"),
         sa.Column(
             "status",
-            ENUM("member", "invitation", "join_request", "admin", name="status"),
+            ENUM("member", "invitation", "join_request", "admin", name="user_status"),
         ),
         sa.UniqueConstraint("user_id", "company_id", name="unique_invites"),
     )
@@ -37,4 +37,4 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     op.drop_table("company_requests")
-    op.execute("DROP TYPE status")
+    op.execute("DROP TYPE user_status")

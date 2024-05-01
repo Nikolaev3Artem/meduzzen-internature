@@ -2,9 +2,10 @@ from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.enums import RequestStatus
 from app.core.exceptions import UserNotAllowed
 from app.core.permissions import RoleChecker
-from app.db.alchemy.models import RequestStatus, User
+from app.db.alchemy.models import User
 from app.db.alchemy.repos.company import CompanyRepos
 from app.db.alchemy.repos.user_requests import UserRequestsRepos
 from app.schemas.user import GetUser
@@ -29,7 +30,7 @@ class UserRequestsService:
             invitation_id=invitation_id, session=session
         )
 
-        if invitation.status == RequestStatus.MEMBER:
+        if invitation.status == RequestStatus.MEMBER.value:
             raise UserNotAllowed(identifier_=user.id)
 
         RoleChecker.check_permission(allowed_user_id=invitation.user_id, user=user)

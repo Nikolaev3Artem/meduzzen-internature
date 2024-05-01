@@ -5,7 +5,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.enums import RequestStatus
 from app.core.exceptions import (
-    AdminNotFound,
     CompanyNotFound,
     InvitationAlreadyExists,
     InvitationNotFound,
@@ -131,8 +130,8 @@ class CompanyRequestsRepos:
         await session.commit()
 
     @staticmethod
-    async def company_promote_to_admin(
-        company_id: UUID, user_id: UUID, session: AsyncSession
+    async def company_update_member_role(
+        company_id: UUID, user_id: UUID, session: AsyncSession, member_role
     ) -> None:
         invitation = await session.execute(
             select(CompanyRequests).where(
@@ -147,28 +146,7 @@ class CompanyRequestsRepos:
         if invitation.status != RequestStatus.MEMBER:
             raise MemberNotFound(identifier_=user_id)
 
-        invitation.status = RequestStatus.ADMIN
-        await session.commit()
-
-    @staticmethod
-    async def company_demotion_admin(
-        company_id: UUID, user_id: UUID, session: AsyncSession
-    ) -> None:
-        invitation = await session.execute(
-            select(CompanyRequests).where(
-                CompanyRequests.company_id == company_id,
-                CompanyRequests.user_id == user_id,
-            )
-        )
-        invitation = invitation.scalar()
-
-        if not invitation:
-            raise UserNotFound(identifier_=user_id)
-
-        if invitation.status != RequestStatus.ADMIN:
-            raise AdminNotFound(identifier_=user_id)
-
-        invitation.status = RequestStatus.MEMBER
+        invitation.status = member_role
         await session.commit()
 
     @staticmethod

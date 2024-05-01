@@ -110,28 +110,24 @@ class CompanyRequestsService:
             session=session, invitation_id=invitation_id
         )
 
-    async def company_promote_to_admin(
-        self, company_id: UUID, user_id: UUID, user: User, session: AsyncSession
+    async def company_update_member_role(
+        self,
+        company_id: UUID,
+        user_id: UUID,
+        user: User,
+        session: AsyncSession,
+        member_role: str,
     ) -> None:
         company = await self._company_repo.get_company(
             id=company_id, session=session, get_hidden=True
         )
         RoleChecker.check_permission(allowed_user_id=company.owner_id, user=user)
 
-        return await self._repo.company_promote_to_admin(
-            company_id=company_id, user_id=user_id, session=session
-        )
-
-    async def company_demotion_admin(
-        self, company_id: UUID, user_id: UUID, user: User, session: AsyncSession
-    ) -> None:
-        company = await self._company_repo.get_company(
-            id=company_id, session=session, get_hidden=True
-        )
-        RoleChecker.check_permission(allowed_user_id=company.owner_id, user=user)
-
-        return await self._repo.company_demotion_admin(
-            company_id=company_id, user_id=user_id, session=session
+        return await self._repo.company_update_member_role(
+            company_id=company_id,
+            user_id=user_id,
+            session=session,
+            member_role=member_role,
         )
 
     async def company_get_admins_list(
