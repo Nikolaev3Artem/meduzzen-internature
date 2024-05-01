@@ -24,13 +24,32 @@ class CompanyNameAlreadyExists(IntegritiError):
         )
 
 
+class InvitationAlreadyExists(IntegritiError):
+    def __init__(
+        self, input_data_: str, column_name_: str, model_name: str = "Invitation"
+    ) -> None:
+        super().__init__(
+            model_name=model_name, column_name_=column_name_, input_data_=input_data_
+        )
+
+
 class UserNotFound(ObjectNotFound):
     def __init__(self, identifier_: str, model_name: str = "User") -> None:
         super().__init__(model_name=model_name, identifier_=identifier_)
 
 
+class MemberNotFound(ObjectNotFound):
+    def __init__(self, identifier_: str, model_name: str = "Company Member") -> None:
+        super().__init__(model_name=model_name, identifier_=identifier_)
+
+
 class CompanyNotFound(ObjectNotFound):
     def __init__(self, identifier_: str, model_name: str = "Company") -> None:
+        super().__init__(model_name=model_name, identifier_=identifier_)
+
+
+class InvitationNotFound(ObjectNotFound):
+    def __init__(self, identifier_: str, model_name: str = "CompanyRequests") -> None:
         super().__init__(model_name=model_name, identifier_=identifier_)
 
 

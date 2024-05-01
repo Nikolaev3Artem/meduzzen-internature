@@ -11,9 +11,11 @@ from app.core.exceptions import (
     ObjectNotFound,
 )
 from app.routers.company import router as company_router
+from app.routers.company_requests import company_requests_router
 from app.routers.healthcheck import router as health_check_router
 from app.routers.jwt_auth import router as auth_router
 from app.routers.user import router as user_router
+from app.routers.user_requests import user_requests_router
 
 app = FastAPI()
 
@@ -58,10 +60,12 @@ async def integrity_error_exception_handler(request: Request, exc: ObjectNotFoun
     )
 
 
-app.include_router(health_check_router)
-app.include_router(user_router)
 app.include_router(auth_router)
+app.include_router(user_router)
 app.include_router(company_router)
+app.include_router(user_requests_router)
+app.include_router(company_requests_router)
+app.include_router(health_check_router)
 
 if __name__ == "__main__":
     uvicorn.run(

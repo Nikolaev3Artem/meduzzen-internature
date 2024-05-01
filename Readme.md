@@ -10,7 +10,7 @@
 ### alembic upgrade head - To apply all migrations
 ### alembic downgrade -1 - Downgrade to previous migration
 ## If you use docker migrations applies in app/entrypoint.sh, but you can manage it manually:
-### docker-compose exec api alembic upgrade head
+### docker-compose exec api alembic upgrade heads
 ### docker-compose exec api alembic downgrade base
 
 ## Testing app:

@@ -1,7 +1,7 @@
 import uuid
 
-from sqlalchemy import Boolean, ForeignKey, String
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Boolean, Enum, ForeignKey, String
+from sqlalchemy.dialects.postgresql import ENUM, UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
@@ -34,3 +34,17 @@ class Company(IDBase):
     name: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
     description: Mapped[str] = mapped_column(String(500), nullable=True)
     visible: Mapped[bool] = mapped_column(Boolean(), default=True, nullable=False)
+
+
+class CompanyRequests(IDBase):
+    __tablename__ = "company_requests"
+
+    user_id: Mapped[UUID] = mapped_column(
+        UUID, ForeignKey("users.id", ondelete="CASCADE")
+    )
+    company_id: Mapped[UUID] = mapped_column(
+        UUID, ForeignKey("company.id", ondelete="CASCADE")
+    )
+    status: Mapped[Enum] = mapped_column(
+        ENUM("member", "invitation", "join_request", name="status")
+    )
