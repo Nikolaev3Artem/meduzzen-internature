@@ -135,13 +135,13 @@ async def company_members(
     )
 
 
-@company_requests_router.post(
+@company_requests_router.patch(
     "/{company_id}/update_member_role/{user_id}", status_code=status.HTTP_200_OK
 )
 async def company_update_member_role(
     company_id: UUID,
     user_id: UUID,
-    member_role: str = Depends(RequestsMemberRoles),
+    member_role: RequestsMemberRoles,
     company_service: CompanyRequestsService = Depends(CompanyRequestsService),
     user: User = Depends(get_active_user),
     session: AsyncSession = Depends(get_session),
@@ -151,7 +151,7 @@ async def company_update_member_role(
         user_id=user_id,
         user=user,
         session=session,
-        member_role=member_role,
+        member_role=member_role.value,
     )
 
 

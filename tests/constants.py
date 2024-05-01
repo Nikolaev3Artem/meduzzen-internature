@@ -25,6 +25,11 @@ users = [
         "username": "test_username5",
         "password": Hasher.get_password_hash("test_password5"),
     },
+    {
+        "email": "qwe6@gmail.com",
+        "username": "test_username6",
+        "password": Hasher.get_password_hash("test_password6"),
+    },
 ]
 companies = [
     {"name": "test1", "description": "test_desc1"},
@@ -36,6 +41,7 @@ requests = [
     {"status": RequestStatus.INVITATION.value},
     {"status": RequestStatus.JOIN_REQUEST.value},
     {"status": RequestStatus.MEMBER.value},
+    {"status": RequestStatus.ADMIN.value},
 ]
 
 test_company_create = CompanyCreate(name="test4", description="test_desc4")

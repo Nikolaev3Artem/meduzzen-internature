@@ -132,3 +132,51 @@ async def test_company_get_members_list(
     assert len(response_data) == 1
     assert response_data[0]["username"] == users[3]["username"]
     assert response_data[0]["email"] == users[3]["email"]
+
+
+async def test_company_promote_to_admin(
+    client: TestClient, prepare_database, fill_database, company_tests_token, session
+):
+    test_company = await session.execute(select(Company).limit(1).offset(0))
+    test_company_id = test_company.scalar().id
+
+    test_user = await session.execute(select(User).limit(1).offset(3))
+    test_user_id = test_user.scalar().id
+
+    response = client.patch(
+        f"/company/{test_company_id}/update_member_role/{test_user_id}?member_role=admin",
+        headers={"Authorization": f"Bearer {company_tests_token}"},
+    )
+
+    assert response.status_code == 200
+
+
+async def test_company_demotion_admin_to_member(
+    client: TestClient, prepare_database, fill_database, company_tests_token, session
+):
+    test_company = await session.execute(select(Company).limit(1).offset(0))
+    test_company_id = test_company.scalar().id
+
+    test_user = await session.execute(select(User).limit(1).offset(4))
+    test_user_id = test_user.scalar().id
+
+    response = client.patch(
+        f"/company/{test_company_id}/update_member_role/{test_user_id}?member_role=member",
+        headers={"Authorization": f"Bearer {company_tests_token}"},
+    )
+
+    assert response.status_code == 200
+
+
+async def test_company_admins_list(
+    client: TestClient, prepare_database, fill_database, company_tests_token, session
+):
+    test_company = await session.execute(select(Company).limit(1).offset(0))
+    test_company_id = test_company.scalar().id
+
+    response = client.get(
+        f"/company/{test_company_id}/admins",
+        headers={"Authorization": f"Bearer {company_tests_token}"},
+    )
+
+    assert response.status_code == 200

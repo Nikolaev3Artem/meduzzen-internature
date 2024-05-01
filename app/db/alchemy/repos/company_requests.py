@@ -143,18 +143,22 @@ class CompanyRequestsRepos:
 
         if not invitation:
             raise UserNotFound(identifier_=user_id)
-        if invitation.status != RequestStatus.MEMBER:
-            raise MemberNotFound(identifier_=user_id)
 
-        invitation.status = member_role
-        await session.commit()
+        if (
+            invitation.status == RequestStatus.MEMBER.value
+            or invitation.status == RequestStatus.ADMIN.value
+        ):
+            invitation.status = member_role
+            await session.commit()
+        else:
+            raise MemberNotFound(identifier_=user_id)
 
     @staticmethod
     async def company_get_admins_list(company_id: UUID, session: AsyncSession) -> None:
         invitation = await session.execute(
             select(User)
             .join(CompanyRequests)
-            .where(CompanyRequests.status == RequestStatus.ADMIN)
+            .where(CompanyRequests.status == RequestStatus.ADMIN.value)
         )
 
         if not invitation:

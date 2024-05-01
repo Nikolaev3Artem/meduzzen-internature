@@ -3,7 +3,7 @@ import enum
 
 class RequestStatus(enum.Enum):
     MEMBER = "member"
-    INVITATIO = "invitation"
+    INVITATION = "invitation"
     JOIN_REQUEST = "join_request"
     ADMIN = "admin"
 

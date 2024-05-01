@@ -51,7 +51,7 @@ async def fill_database(session):
     await session.execute(insert(Company).values(companies))
     await session.commit()
 
-    test_users = await session.execute(select(User).limit(3).offset(1))
+    test_users = await session.execute(select(User).limit(4).offset(1))
     test_users = test_users.scalars().all()
     test_company = await session.execute(select(Company).limit(1).offset(0))
     test_company_id = test_company.scalar().id

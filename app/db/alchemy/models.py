@@ -46,5 +46,5 @@ class CompanyRequests(IDBase):
         UUID, ForeignKey("company.id", ondelete="CASCADE")
     )
     status: Mapped[Enum] = mapped_column(
-        ENUM("member", "invitation", "join_request", name="status")
+        ENUM("member", "invitation", "join_request", "admin", name="user_status")
     )
