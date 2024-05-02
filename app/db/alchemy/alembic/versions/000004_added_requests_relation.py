@@ -28,7 +28,8 @@ def upgrade() -> None:
         sa.ForeignKeyConstraint(["user_id"], ["users.id"], ondelete="CASCADE"),
         sa.ForeignKeyConstraint(["company_id"], ["company.id"], ondelete="CASCADE"),
         sa.Column(
-            "status", ENUM("member", "invitation", "join_request", name="user_status")
+            "status",
+            ENUM("member", "invitation", "join_request", "admin", name="user_status"),
         ),
         sa.UniqueConstraint("user_id", "company_id", name="unique_invites"),
     )

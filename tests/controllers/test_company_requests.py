@@ -1,134 +1,129 @@
 from fastapi.testclient import TestClient
-from sqlalchemy import select
 
-from app.core.enums import RequestStatus
-from app.db.alchemy.models import Company, CompanyRequests, User
-from tests.constants import users
+from tests.constants import users_list
 
 
-async def test_company_send_invite(
-    client: TestClient, prepare_database, fill_database, company_tests_token, session
-):
-    test_company = await session.execute(select(Company).limit(1).offset(0))
-    test_company_id = test_company.scalar().id
-    test_user = await session.execute(select(User).limit(1).offset(0))
-    test_user_id = test_user.scalar().id
+def test_company_send_invite(client: TestClient, companies, users, company_tests_token):
     response = client.post(
-        f"/company/{test_company_id}/send_invite/{test_user_id}",
+        f"/company/{companies[0].id}/send_invite/{users[0].id}",
         headers={"Authorization": f"Bearer {company_tests_token}"},
     )
     assert response.status_code == 201
 
 
 async def test_company_delete_invite(
-    client: TestClient, prepare_database, fill_database, company_tests_token, session
+    client: TestClient, companies, company_requests, company_tests_token
 ):
-    test_company = await session.execute(select(Company).limit(1).offset(0))
-    test_company_id = test_company.scalar().id
-    test_invite = await session.execute(
-        select(CompanyRequests).where(
-            CompanyRequests.status == RequestStatus.INVITATION.value
-        )
-    )
-    test_invite_id = test_invite.scalar().id
     response = client.delete(
-        f"/company/{test_company_id}/cancel_invite/{test_invite_id}",
+        f"/company/{companies[0].id}/cancel_invite/{company_requests[0].id}",
         headers={"Authorization": f"Bearer {company_tests_token}"},
     )
     assert response.status_code == 204
 
 
 async def test_company_accept_join_request(
-    client: TestClient, prepare_database, fill_database, company_tests_token, session
+    client: TestClient, companies, company_requests, company_tests_token
 ):
-    test_company = await session.execute(select(Company).limit(1).offset(0))
-    test_company_id = test_company.scalar().id
-    test_invite = await session.execute(select(CompanyRequests).limit(1).offset(1))
-    test_invite_id = test_invite.scalar().id
     response = client.post(
-        f"/company/{test_company_id}/accept_join_request/{test_invite_id}",
+        f"/company/{companies[0].id}/accept_join_request/{company_requests[1].id}",
         headers={"Authorization": f"Bearer {company_tests_token}"},
     )
     assert response.status_code == 200
 
 
 async def test_company_reject_join_request(
-    client: TestClient, prepare_database, fill_database, company_tests_token, session
+    client: TestClient, companies, company_requests, company_tests_token
 ):
-    test_company = await session.execute(select(Company).limit(1).offset(0))
-    test_company_id = test_company.scalar().id
-    test_invite = await session.execute(select(CompanyRequests).limit(1).offset(1))
-    test_invite_id = test_invite.scalar().id
     response = client.delete(
-        f"/company/{test_company_id}/reject_join_request/{test_invite_id}",
+        f"/company/{companies[0].id}/reject_join_request/{company_requests[1].id}",
         headers={"Authorization": f"Bearer {company_tests_token}"},
     )
     assert response.status_code == 204
 
 
 async def test_company_kick_member(
-    client: TestClient, prepare_database, fill_database, company_tests_token, session
+    client: TestClient, companies, users, set_up_company_requests, company_tests_token
 ):
-    test_company = await session.execute(select(Company).limit(1).offset(0))
-    test_company_id = test_company.scalar().id
-    test_member = await session.execute(select(User).limit(1).offset(3))
-    test_member_id = test_member.scalar().id
     response = client.delete(
-        f"/company/{test_company_id}/kick/{test_member_id}",
+        f"/company/{companies[0].id}/kick/{users[2].id}",
         headers={"Authorization": f"Bearer {company_tests_token}"},
     )
     assert response.status_code == 204
 
 
 async def test_company_get_invites_list(
-    client: TestClient, prepare_database, fill_database, company_tests_token, session
+    client: TestClient, companies, set_up_company_requests, company_tests_token
 ):
-    test_company = await session.execute(select(Company).limit(1).offset(0))
-    test_company_id = test_company.scalar().id
-
     response = client.get(
-        f"/company/{test_company_id}/invitations",
+        f"/company/{companies[0].id}/invitations",
         headers={"Authorization": f"Bearer {company_tests_token}"},
     )
     response_data = response.json()
 
     assert response.status_code == 200
     assert len(response_data) == 1
-    assert response_data[0]["username"] == users[1]["username"]
-    assert response_data[0]["email"] == users[1]["email"]
+    assert response_data[0]["username"] == users_list[0]["username"]
+    assert response_data[0]["email"] == users_list[0]["email"]
 
 
 async def test_company_get_join_requests_list(
-    client: TestClient, prepare_database, fill_database, company_tests_token, session
+    client: TestClient, companies, set_up_company_requests, company_tests_token
 ):
-    test_company = await session.execute(select(Company).limit(1).offset(0))
-    test_company_id = test_company.scalar().id
-
     response = client.get(
-        f"/company/{test_company_id}/join_requests",
+        f"/company/{companies[0].id}/join_requests",
         headers={"Authorization": f"Bearer {company_tests_token}"},
     )
     response_data = response.json()
 
     assert response.status_code == 200
     assert len(response_data) == 1
-    assert response_data[0]["username"] == users[2]["username"]
-    assert response_data[0]["email"] == users[2]["email"]
+    assert response_data[0]["username"] == users_list[1]["username"]
+    assert response_data[0]["email"] == users_list[1]["email"]
 
 
 async def test_company_get_members_list(
-    client: TestClient, prepare_database, fill_database, company_tests_token, session
+    client: TestClient, companies, set_up_company_requests, company_tests_token
 ):
-    test_company = await session.execute(select(Company).limit(1).offset(0))
-    test_company_id = test_company.scalar().id
-
     response = client.get(
-        f"/company/{test_company_id}/members",
+        f"/company/{companies[0].id}/members",
         headers={"Authorization": f"Bearer {company_tests_token}"},
     )
     response_data = response.json()
 
     assert response.status_code == 200
     assert len(response_data) == 1
-    assert response_data[0]["username"] == users[3]["username"]
-    assert response_data[0]["email"] == users[3]["email"]
+    assert response_data[0]["username"] == users_list[2]["username"]
+    assert response_data[0]["email"] == users_list[2]["email"]
+
+
+async def test_company_promote_to_admin(
+    client: TestClient, companies, users, set_up_company_requests, company_tests_token
+):
+    response = client.patch(
+        f"/company/{companies[0].id}/update_member_role/{users[2].id}?member_role=admin",
+        headers={"Authorization": f"Bearer {company_tests_token}"},
+    )
+
+    assert response.status_code == 200
+
+
+async def test_company_demotion_admin_to_member(
+    client: TestClient, companies, users, set_up_company_requests, company_tests_token
+):
+    response = client.patch(
+        f"/company/{companies[0].id}/update_member_role/{users[3].id}?member_role=member",
+        headers={"Authorization": f"Bearer {company_tests_token}"},
+    )
+
+    assert response.status_code == 200
+
+
+async def test_company_admins_list(
+    client: TestClient, companies, set_up_company_requests, company_tests_token
+):
+    response = client.get(
+        f"/company/{companies[0].id}/admins",
+        headers={"Authorization": f"Bearer {company_tests_token}"},
+    )
+
+    assert response.status_code == 200

@@ -9,6 +9,7 @@ from app.core.exceptions import (
     InvitationAlreadyExists,
     InvitationNotFound,
     MemberNotFound,
+    UserNotFound,
 )
 from app.db.alchemy.models import Company, CompanyRequests, User
 from app.schemas.company_requests import GetInvitation
@@ -127,6 +128,52 @@ class CompanyRequestsRepos:
 
         await session.delete(invitation)
         await session.commit()
+
+    @staticmethod
+    async def company_update_member_role(
+        company_id: UUID, user_id: UUID, session: AsyncSession, member_role
+    ) -> None:
+        invitation = await session.execute(
+            select(CompanyRequests).where(
+                CompanyRequests.company_id == company_id,
+                CompanyRequests.user_id == user_id,
+            )
+        )
+        invitation = invitation.scalar()
+
+        if not invitation:
+            raise UserNotFound(identifier_=user_id)
+
+        if (
+            invitation.status == RequestStatus.MEMBER.value
+            or invitation.status == RequestStatus.ADMIN.value
+        ):
+            invitation.status = member_role
+            await session.commit()
+        else:
+            raise MemberNotFound(identifier_=user_id)
+
+    @staticmethod
+    async def company_get_admins_list(company_id: UUID, session: AsyncSession) -> None:
+        invitation = await session.execute(
+            select(User)
+            .join(CompanyRequests)
+            .where(CompanyRequests.status == RequestStatus.ADMIN.value)
+        )
+
+        if not invitation:
+            raise InvitationNotFound(identifier_=invitation.id)
+
+        return invitation.scalars().all()
+
+    @staticmethod
+    async def get_invitation_user(
+        invitation_id: UUID, session: AsyncSession
+    ) -> GetInvitation:
+        invitation = await session.get(CompanyRequests, invitation_id)
+        if not invitation:
+            raise InvitationNotFound(identifier_=invitation_id)
+        return invitation
 
     @staticmethod
     async def get_invitation_by_company(

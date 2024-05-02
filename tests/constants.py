@@ -4,7 +4,7 @@ from app.db.alchemy.models import User
 from app.schemas.company import CompanyCreate, CompanyUpdate
 from app.schemas.user import UserSignIn, UserSignUp, UserUpdate
 
-users = [
+users_list = [
     {
         "email": "qwe@gmail.com",
         "username": "test_username1",
@@ -25,8 +25,13 @@ users = [
         "username": "test_username5",
         "password": Hasher.get_password_hash("test_password5"),
     },
+    {
+        "email": "qwe6@gmail.com",
+        "username": "test_username6",
+        "password": Hasher.get_password_hash("test_password6"),
+    },
 ]
-companies = [
+companies_list = [
     {"name": "test1", "description": "test_desc1"},
     {"name": "test2", "description": "test_desc2"},
     {"name": "test3", "description": "test_desc3"},
@@ -36,6 +41,7 @@ requests = [
     {"status": RequestStatus.INVITATION.value},
     {"status": RequestStatus.JOIN_REQUEST.value},
     {"status": RequestStatus.MEMBER.value},
+    {"status": RequestStatus.ADMIN.value},
 ]
 
 test_company_create = CompanyCreate(name="test4", description="test_desc4")
