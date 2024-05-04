@@ -1,6 +1,7 @@
 import uuid
+from datetime import datetime
 
-from sqlalchemy import Boolean, Enum, ForeignKey, Integer, String
+from sqlalchemy import Boolean, DateTime, Enum, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import ENUM, JSONB, UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
@@ -59,4 +60,21 @@ class Quiz(IDBase):
     questions: Mapped[JSONB] = mapped_column(JSONB(), nullable=False)
     company_id: Mapped[UUID] = mapped_column(
         UUID, ForeignKey("company.id", ondelete="CASCADE")
+    )
+
+
+class QuizResults(IDBase):
+    __tablename__ = "quiz_results"
+
+    company_id: Mapped[UUID] = mapped_column(
+        UUID, ForeignKey("company.id", ondelete="CASCADE")
+    )
+    user_id: Mapped[UUID] = mapped_column(
+        UUID, ForeignKey("company.id", ondelete="CASCADE")
+    )
+    quiz_id: Mapped[UUID] = mapped_column(
+        UUID, ForeignKey("company.id", ondelete="CASCADE")
+    )
+    submission_time: Mapped[DateTime] = mapped_column(
+        DateTime(), default=datetime.now(), nullable=False
     )

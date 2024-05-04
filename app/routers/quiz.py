@@ -9,11 +9,11 @@ from app.schemas.quiz import QuizCreate, QuizGet, QuizUpdate
 from app.services.auth_jwt import get_active_user
 from app.services.quiz import QuizService
 
-router = APIRouter(prefix="/quiz", tags=["Quiz"])
+router = APIRouter(prefix="/company/{company_id}/quiz", tags=["Quiz"])
 
 
 @router.post(
-    "/{company_id}/create_quiz",
+    "/",
     response_model=QuizGet,
     status_code=status.HTTP_201_CREATED,
 )
@@ -29,20 +29,21 @@ async def quiz_create(
     )
 
 
-@router.get(
-    "/{quiz_id}/get_quiz", response_model=QuizGet, status_code=status.HTTP_200_OK
-)
+@router.get("/{quiz_id}", response_model=QuizGet, status_code=status.HTTP_200_OK)
 async def quiz_get(
     quiz_id: UUID,
+    company_id: UUID,
     session: AsyncSession = Depends(get_session),
     quiz_service: QuizService = Depends(QuizService),
     user: User = Depends(get_active_user),
 ) -> QuizGet:
-    return await quiz_service.quiz_get(user=user, quiz_id=quiz_id, session=session)
+    return await quiz_service.quiz_get(
+        user=user, quiz_id=quiz_id, company_id=company_id, session=session
+    )
 
 
 @router.get(
-    "/{company_id}/quiz_list",
+    "/",
     response_model=list[QuizGet],
     status_code=status.HTTP_200_OK,
 )
@@ -60,7 +61,7 @@ async def quiz_get_list(
 
 
 @router.patch(
-    "/{quiz_id}/update_quiz/{company_id}",
+    "/{quiz_id}",
     response_model=QuizGet,
     status_code=status.HTTP_200_OK,
 )
@@ -77,9 +78,7 @@ async def quiz_update(
     )
 
 
-@router.delete(
-    "/{quiz_id}/delete_quiz/{company_id}", status_code=status.HTTP_204_NO_CONTENT
-)
+@router.delete("/{quiz_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def quiz_delete(
     quiz_id: UUID,
     company_id: UUID,

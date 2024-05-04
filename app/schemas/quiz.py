@@ -37,6 +37,7 @@ class QuizCreate(QuizBase):
 class QuizUpdate(BaseModel):
     name: str | None = None
     description: str | None = None
+    questions: list[Question] | None = None
 
 
 class QuizGet(QuizBase):
