@@ -25,8 +25,13 @@ class QuizRepos:
         return quiz
 
     @staticmethod
-    async def get_quiz(quiz_id: UUID, session: AsyncSession) -> QuizGet:
-        quiz_data = await session.get(Quiz, quiz_id)
+    async def get_quiz(
+        quiz_id: UUID, session: AsyncSession, company_id: UUID
+    ) -> QuizGet:
+        quiz_data = await session.execute(
+            select(Quiz).where(Quiz.id == quiz_id, Quiz.company_id == company_id)
+        )
+        quiz_data = quiz_data.scalar()
         if not quiz_data:
             raise QuizNotFound(identifier_=quiz_id)
         return quiz_data

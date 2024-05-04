@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from pydantic import BaseModel, field_validator
 
 
@@ -37,7 +39,9 @@ class QuizCreate(QuizBase):
 class QuizUpdate(BaseModel):
     name: str | None = None
     description: str | None = None
+    questions: list[Question] | None = None
 
 
 class QuizGet(QuizBase):
+    id: UUID
     questions: list[Question]

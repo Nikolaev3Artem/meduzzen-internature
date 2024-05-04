@@ -5,7 +5,7 @@ from tests.constants import quiz_create, quiz_list, quiz_update
 
 def test_quizzes_get_list(client: TestClient, companies, quizzes, company_tests_token):
     response = client.get(
-        f"/quiz/{companies[0].id}/quiz_list?limit=3&offset=0",
+        f"/company/{companies[0].id}/quiz?limit=3&offset=0",
         headers={"Authorization": f"Bearer {company_tests_token}"},
     )
     response_data = response.json()
@@ -19,7 +19,7 @@ def test_quizzes_get_list(client: TestClient, companies, quizzes, company_tests_
 
 def test_quizzes_create(client: TestClient, companies, quizzes, company_tests_token):
     response = client.post(
-        f"/quiz/{companies[0].id}/create_quiz",
+        f"/company/{companies[0].id}/quiz/",
         json={
             "name": quiz_create["name"],
             "description": quiz_create["description"],
@@ -36,7 +36,7 @@ def test_quizzes_create(client: TestClient, companies, quizzes, company_tests_to
 
 def test_quizzes_update(client: TestClient, companies, quizzes, company_tests_token):
     response = client.patch(
-        f"/quiz/{quizzes[0].id}/update_quiz/{companies[0].id}",
+        f"/company/{companies[0].id}/quiz/{quizzes[0].id}",
         json={"name": quiz_update["name"]},
         headers={"Authorization": f"Bearer {company_tests_token}"},
     )
@@ -47,7 +47,7 @@ def test_quizzes_update(client: TestClient, companies, quizzes, company_tests_to
 
 def test_quizzes_delete(client: TestClient, companies, quizzes, company_tests_token):
     response = client.delete(
-        f"/quiz/{quizzes[0].id}/delete_quiz/{companies[0].id}",
+        f"/company/{companies[0].id}/quiz/{quizzes[0].id}",
         headers={"Authorization": f"Bearer {company_tests_token}"},
     )
     assert response.status_code == 204
