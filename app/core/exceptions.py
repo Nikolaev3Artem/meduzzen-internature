@@ -38,6 +38,11 @@ class UserNotFound(ObjectNotFound):
         super().__init__(model_name=model_name, identifier_=identifier_)
 
 
+class QuizNotFound(ObjectNotFound):
+    def __init__(self, identifier_: str, model_name: str = "Quiz") -> None:
+        super().__init__(model_name=model_name, identifier_=identifier_)
+
+
 class MemberNotFound(ObjectNotFound):
     def __init__(self, identifier_: str, model_name: str = "Company Member") -> None:
         super().__init__(model_name=model_name, identifier_=identifier_)

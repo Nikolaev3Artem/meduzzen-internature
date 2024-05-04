@@ -25,7 +25,7 @@ class CompanyRequestsService:
         company = await self._company_repo.get_company(
             id=company_id, session=session, get_hidden=True
         )
-        RoleChecker.check_permission(allowed_user_id=company.owner_id, user=user)
+        RoleChecker.check_owner(allowed_user_id=company.owner_id, user=user)
 
         return await self._repo.company_create_invitation(
             company_id=company_id, user_id=user_id, session=session
@@ -38,7 +38,7 @@ class CompanyRequestsService:
             id=company_id, session=session, get_hidden=True
         )
 
-        RoleChecker.check_permission(allowed_user_id=company.owner_id, user=user)
+        RoleChecker.check_owner(allowed_user_id=company.owner_id, user=user)
 
         return await self._repo.company_delete_invitation(
             session=session, invitation_id=invitation_id
@@ -50,7 +50,7 @@ class CompanyRequestsService:
         company = await self._company_repo.get_company(
             id=company_id, session=session, get_hidden=True
         )
-        RoleChecker.check_permission(allowed_user_id=company.owner_id, user=user)
+        RoleChecker.check_owner(allowed_user_id=company.owner_id, user=user)
         return await self._repo.invitations_list_company(
             company_id=company_id, session=session
         )
@@ -61,7 +61,7 @@ class CompanyRequestsService:
         company = await self._company_repo.get_company(
             id=company_id, session=session, get_hidden=True
         )
-        RoleChecker.check_permission(allowed_user_id=company.owner_id, user=user)
+        RoleChecker.check_owner(allowed_user_id=company.owner_id, user=user)
         return await self._repo.company_get_members(
             company_id=company_id, session=session
         )
@@ -72,7 +72,7 @@ class CompanyRequestsService:
         company = await self._company_repo.get_company(
             id=company_id, session=session, get_hidden=True
         )
-        RoleChecker.check_permission(allowed_user_id=company.owner_id, user=user)
+        RoleChecker.check_owner(allowed_user_id=company.owner_id, user=user)
         return await self._repo.company_kick_member(
             company_id=company_id, session=session, user_id=user_id
         )
@@ -83,7 +83,7 @@ class CompanyRequestsService:
         company = await self._company_repo.get_company(
             id=company_id, session=session, get_hidden=True
         )
-        RoleChecker.check_permission(allowed_user_id=company.owner_id, user=user)
+        RoleChecker.check_owner(allowed_user_id=company.owner_id, user=user)
         return await self._repo.company_join_requests_list(
             company_id=company_id, session=session
         )
@@ -94,7 +94,7 @@ class CompanyRequestsService:
         company = await self._company_repo.get_company(
             id=company_id, session=session, get_hidden=True
         )
-        RoleChecker.check_permission(allowed_user_id=company.owner_id, user=user)
+        RoleChecker.check_owner(allowed_user_id=company.owner_id, user=user)
         return await self._repo.company_accept_join_request(
             session=session, invitation_id=invitation_id
         )
@@ -105,7 +105,7 @@ class CompanyRequestsService:
         company = await self._company_repo.get_company(
             id=company_id, session=session, get_hidden=True
         )
-        RoleChecker.check_permission(allowed_user_id=company.owner_id, user=user)
+        RoleChecker.check_owner(allowed_user_id=company.owner_id, user=user)
         return await self._repo.company_reject_join_request(
             session=session, invitation_id=invitation_id
         )
@@ -121,7 +121,7 @@ class CompanyRequestsService:
         company = await self._company_repo.get_company(
             id=company_id, session=session, get_hidden=True
         )
-        RoleChecker.check_permission(allowed_user_id=company.owner_id, user=user)
+        RoleChecker.check_owner(allowed_user_id=company.owner_id, user=user)
 
         return await self._repo.company_update_member_role(
             company_id=company_id,

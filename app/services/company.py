@@ -39,7 +39,7 @@ class CompanyService:
         company = await self._repo.get_company(
             id=company_id, session=session, get_hidden=True
         )
-        RoleChecker.check_permission(allowed_user_id=company.owner_id, user=user)
+        RoleChecker.check_owner(allowed_user_id=company.owner_id, user=user)
         return await self._repo.update_company(
             company_id=company_id, company_data=company_data, session=session
         )
@@ -50,6 +50,6 @@ class CompanyService:
         company = await self._repo.get_company(
             id=company_id, session=session, get_hidden=True
         )
-        RoleChecker.check_permission(allowed_user_id=company.owner_id, user=user)
+        RoleChecker.check_owner(allowed_user_id=company.owner_id, user=user)
 
         return await self._repo.delete_company(company_id=company_id, session=session)

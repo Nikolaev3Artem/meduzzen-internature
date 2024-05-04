@@ -20,7 +20,7 @@ class UserRequestsService:
     async def user_invitation_list(
         self, session: AsyncSession, user: User, user_id: UUID
     ) -> list[GetUser]:
-        RoleChecker.check_permission(allowed_user_id=user_id, user=user)
+        RoleChecker.check_owner(allowed_user_id=user_id, user=user)
         return await self._repo.invitation_list_user(user_id=user_id, session=session)
 
     async def user_accept_invitation(
@@ -33,7 +33,7 @@ class UserRequestsService:
         if invitation.status == RequestStatus.MEMBER.value:
             raise UserNotAllowed(identifier_=user.id)
 
-        RoleChecker.check_permission(allowed_user_id=invitation.user_id, user=user)
+        RoleChecker.check_owner(allowed_user_id=invitation.user_id, user=user)
         return await self._repo.accept_invitation_user(
             invitation_id=invitation_id, session=session
         )
@@ -45,7 +45,7 @@ class UserRequestsService:
             invitation_id=invitation_id, session=session
         )
 
-        RoleChecker.check_permission(allowed_user_id=invitation.user_id, user=user)
+        RoleChecker.check_owner(allowed_user_id=invitation.user_id, user=user)
         return await self._repo.reject_invitation_user(
             invitation_id=invitation_id, session=session
         )
@@ -56,7 +56,7 @@ class UserRequestsService:
         user: User,
         session: AsyncSession,
     ) -> GetJoinRequest:
-        RoleChecker.check_permission(allowed_user_id=user.id, user=user)
+        RoleChecker.check_owner(allowed_user_id=user.id, user=user)
         return await self._repo.user_create_join_request(
             user_id=user.id, session=session, company_id=company_id
         )
@@ -64,7 +64,7 @@ class UserRequestsService:
     async def user_list_join_request(
         self, user_id: UUID, user: User, session: AsyncSession
     ) -> list[GetJoinRequest]:
-        RoleChecker.check_permission(allowed_user_id=user_id, user=user)
+        RoleChecker.check_owner(allowed_user_id=user_id, user=user)
         return await self._repo.user_list_join_request(user_id=user_id, session=session)
 
     async def user_cancel_join_request(
@@ -73,7 +73,7 @@ class UserRequestsService:
         join_request = await self._repo.get_invitation_user(
             invitation_id=invitation_id, session=session
         )
-        RoleChecker.check_permission(allowed_user_id=join_request.user_id, user=user)
+        RoleChecker.check_owner(allowed_user_id=join_request.user_id, user=user)
         return await self._repo.user_cancel_join_request(
             invitation_id=invitation_id, session=session
         )
@@ -85,7 +85,7 @@ class UserRequestsService:
             company_id=company_id, session=session
         )
 
-        RoleChecker.check_permission(allowed_user_id=invitation.user_id, user=user)
+        RoleChecker.check_owner(allowed_user_id=invitation.user_id, user=user)
         return await self._repo.user_company_leave(
             invitation_id=invitation.id, session=session
         )

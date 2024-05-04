@@ -6,11 +6,12 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
 
 from app.core.config import settings
-from app.db.alchemy.models import Base, Company, CompanyRequests, User
+from app.db.alchemy.models import Base, Company, CompanyRequests, Quiz, User
 from app.db.postgress import get_session
 from app.main import app
 from tests.constants import (
     companies_list,
+    quiz_list,
     requests,
     test_company_owner_login,
     test_user_login,
@@ -61,7 +62,14 @@ async def set_up_company_requests(users, companies, session):
         user["company_id"] = companies[0].id
     await session.execute(insert(CompanyRequests).values(requests))
     await session.commit()
-    yield
+
+
+@fixture(scope="function")
+async def set_up_quizzes(companies, session):
+    for index, quiz in enumerate(quiz_list):
+        quiz["company_id"] = companies[0].id
+    await session.execute(insert(Quiz).values(quiz_list))
+    await session.commit()
 
 
 @fixture(scope="function", name="users")
@@ -80,6 +88,12 @@ async def companies(prepare_database, set_up_companies, session):
 async def company_requests(prepare_database, set_up_company_requests, session):
     company_requests = await session.execute(select(CompanyRequests))
     yield company_requests.scalars().all()
+
+
+@fixture(scope="function", name="quizzes")
+async def quizzes(prepare_database, set_up_quizzes, session):
+    quizzes = await session.execute(select(Quiz))
+    yield quizzes.scalars().all()
 
 
 @fixture(scope="function")

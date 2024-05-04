@@ -2,6 +2,7 @@ from app.core.enums import RequestStatus
 from app.core.hashing import Hasher
 from app.db.alchemy.models import User
 from app.schemas.company import CompanyCreate, CompanyUpdate
+from app.schemas.quiz import QuizCreate
 from app.schemas.user import UserSignIn, UserSignUp, UserUpdate
 
 users_list = [
@@ -43,6 +44,78 @@ requests = [
     {"status": RequestStatus.MEMBER.value},
     {"status": RequestStatus.ADMIN.value},
 ]
+
+quiz_list = [
+    {
+        "name": "quiz_1",
+        "description": "quiz_desc_1",
+        "questions": [
+            {
+                "name": "3",
+                "answers": [
+                    {"name": "1", "is_correct": False},
+                    {"name": "2", "is_correct": True},
+                ],
+            },
+            {
+                "name": "321",
+                "answers": [
+                    {"name": "2", "is_correct": False},
+                    {"name": "2", "is_correct": True},
+                ],
+            },
+        ],
+    },
+    {
+        "name": "quiz_2",
+        "description": "quiz_desc_2",
+        "questions": [
+            {
+                "name": "3",
+                "answers": [
+                    {"name": "1", "is_correct": False},
+                    {"name": "2", "is_correct": True},
+                ],
+            },
+            {
+                "name": "321",
+                "answers": [
+                    {"name": "2", "is_correct": False},
+                    {"name": "2", "is_correct": True},
+                ],
+            },
+        ],
+    },
+    {
+        "name": "quiz_3",
+        "description": "quiz_desc_3",
+        "questions": [
+            {
+                "name": "3",
+                "answers": [
+                    {"name": "1", "is_correct": False},
+                    {"name": "2", "is_correct": True},
+                ],
+            },
+            {
+                "name": "321",
+                "answers": [
+                    {"name": "2", "is_correct": False},
+                    {"name": "2", "is_correct": True},
+                ],
+            },
+        ],
+    },
+]
+
+quiz_create = QuizCreate(
+    name=quiz_list[0]["name"],
+    description=quiz_list[0]["description"],
+    questions=quiz_list[0]["questions"],
+)
+quiz_create = quiz_create.model_dump()
+
+quiz_update = {"name": "quiz_updated_name"}
 
 test_company_create = CompanyCreate(name="test4", description="test_desc4")
 
