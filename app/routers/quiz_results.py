@@ -1,10 +1,12 @@
 from uuid import UUID
 
+import redis.asyncio as redis
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.alchemy.models import User
 from app.db.postgress import get_session
+from app.db.redis import RedisService
 from app.schemas.quiz_results import QuizResultsCreate, QuizResultsGet
 from app.services.auth_jwt import get_active_user
 from app.services.quiz_results import QuizResultsService
@@ -27,6 +29,7 @@ async def submit_quiz_results(
     session: AsyncSession = Depends(get_session),
     quiz_results_service: QuizResultsService = Depends(QuizResultsService),
     user: User = Depends(get_active_user),
+    redis_service: redis = Depends(RedisService),
 ) -> QuizResultsGet:
     return await quiz_results_service.quiz_submit(
         quiz_results=quiz_results,
@@ -35,6 +38,7 @@ async def submit_quiz_results(
         company_id=company_id,
         quiz_id=quiz_id,
         user_id=user_id,
+        redis_service=redis_service,
     )
 
 

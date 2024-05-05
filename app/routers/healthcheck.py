@@ -4,7 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.postgress import get_session
-from app.db.redis import Redis
+from app.db.redis import RedisService
 
 router = APIRouter(prefix="/healthcheck", tags=["Healthcheck"])
 
@@ -12,7 +12,7 @@ router = APIRouter(prefix="/healthcheck", tags=["Healthcheck"])
 @router.get("/redis")
 async def redis_healthcheck() -> dict:
     try:
-        redis = Redis()
+        redis = RedisService()
         await redis._redis.ping()
         return {"status_code": 200, "detail": "ok", "result": "redis working"}
     except redis_error.ConnectionError:
