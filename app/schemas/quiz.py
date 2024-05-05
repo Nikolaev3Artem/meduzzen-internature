@@ -12,13 +12,6 @@ class Question(BaseModel):
     name: str
     answers: list[Answer]
 
-    @field_validator("answers")
-    @classmethod
-    def more_than_two_check(cls, answers: list[Answer]) -> list[Answer]:
-        if len(answers) < 2:
-            raise ValueError("Answers must be more than two")
-        return answers
-
 
 class QuizBase(BaseModel):
     name: str

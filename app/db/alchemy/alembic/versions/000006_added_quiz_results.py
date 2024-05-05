@@ -10,7 +10,7 @@ from typing import Sequence, Union
 
 import sqlalchemy as sa
 from alembic import op
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import JSONB, UUID
 
 # revision identifiers, used by Alembic.
 revision: str = "000006"
@@ -35,11 +35,9 @@ def upgrade() -> None:
         sa.ForeignKeyConstraint(["company_id"], ["company.id"], ondelete="CASCADE"),
         sa.ForeignKeyConstraint(["quiz_id"], ["quiz.id"], ondelete="CASCADE"),
         sa.ForeignKeyConstraint(["user_id"], ["users.id"], ondelete="CASCADE"),
-        sa.Column(
-            "submission_time",
-            sa.DateTime(),
-            server_default=sa.func.current_timestamp(),
-            nullable=False,
+        sa.Column("results", JSONB(), nullable=True),
+        sa.UniqueConstraint(
+            "company_id", "quiz_id", "user_id", name="unique_quiz_results"
         ),
     )
 
