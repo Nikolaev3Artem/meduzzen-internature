@@ -1,7 +1,7 @@
 import uuid
 
-from sqlalchemy import Boolean, Enum, ForeignKey, String
-from sqlalchemy.dialects.postgresql import ENUM, UUID
+from sqlalchemy import Boolean, Enum, ForeignKey, Integer, String
+from sqlalchemy.dialects.postgresql import ENUM, JSONB, UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
@@ -47,4 +47,16 @@ class CompanyRequests(IDBase):
     )
     status: Mapped[Enum] = mapped_column(
         ENUM("member", "invitation", "join_request", "admin", name="user_status")
+    )
+
+
+class Quiz(IDBase):
+    __tablename__ = "quiz"
+
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    description: Mapped[str] = mapped_column(String(500), nullable=True)
+    submitions: Mapped[int] = mapped_column(Integer(), default=0, nullable=False)
+    questions: Mapped[JSONB] = mapped_column(JSONB(), nullable=False)
+    company_id: Mapped[UUID] = mapped_column(
+        UUID, ForeignKey("company.id", ondelete="CASCADE", nullable=False)
     )
