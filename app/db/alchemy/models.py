@@ -58,5 +58,5 @@ class Quiz(IDBase):
     submitions: Mapped[int] = mapped_column(Integer(), default=0, nullable=False)
     questions: Mapped[JSONB] = mapped_column(JSONB(), nullable=False)
     company_id: Mapped[UUID] = mapped_column(
-        UUID, ForeignKey("company.id", ondelete="CASCADE")
+        UUID, ForeignKey("company.id", ondelete="CASCADE", nullable=False)
     )
