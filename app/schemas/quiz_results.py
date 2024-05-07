@@ -4,12 +4,17 @@ from pydantic import BaseModel
 
 
 class UserAnswers(BaseModel):
-    question: str
+    answer: str
     is_correct_answer: bool
 
 
+class Question(BaseModel):
+    name: str
+    answer: UserAnswers
+
+
 class UserSumbition(BaseModel):
-    answers: list[UserAnswers]
+    questions: list[Question]
 
 
 class QuizResultsBase(BaseModel):
@@ -21,4 +26,5 @@ class QuizResultsGet(QuizResultsBase):
 
 
 class QuizResultsCreate(QuizResultsBase):
+    company_id: UUID
     ...
