@@ -14,7 +14,7 @@ class RedisService:
         )
 
     async def set_cache(self, key: str, value: dict) -> None:
-        await self._redis.set(key, value, ttl=timedelta(hours=48))
+        await self._redis.set(key, value)
         await self._redis.expire(key, time=timedelta(hours=48))
 
     async def get_cache(self, key: str) -> dict:
