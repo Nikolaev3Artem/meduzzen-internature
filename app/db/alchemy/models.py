@@ -58,7 +58,7 @@ class Quiz(IDBase):
     submitions: Mapped[int] = mapped_column(Integer(), default=0, nullable=False)
     questions: Mapped[JSONB] = mapped_column(JSONB(), nullable=False)
     company_id: Mapped[UUID] = mapped_column(
-        UUID, ForeignKey("company.id", ondelete="CASCADE")
+        UUID, ForeignKey("company.id", ondelete="CASCADE"), nullable=False
     )
 
 
@@ -66,12 +66,12 @@ class QuizResults(IDBase):
     __tablename__ = "quiz_results"
 
     company_id: Mapped[UUID] = mapped_column(
-        UUID, ForeignKey("company.id", ondelete="CASCADE")
+        UUID, ForeignKey("company.id", ondelete="CASCADE"), nullable=False
     )
     user_id: Mapped[UUID] = mapped_column(
-        UUID, ForeignKey("company.id", ondelete="CASCADE")
+        UUID, ForeignKey("company.id", ondelete="CASCADE"), nullable=False
     )
     quiz_id: Mapped[UUID] = mapped_column(
-        UUID, ForeignKey("company.id", ondelete="CASCADE")
+        UUID, ForeignKey("company.id", ondelete="CASCADE"), nullable=False
     )
     results: Mapped[JSONB] = mapped_column(JSONB(), nullable=True)

@@ -33,7 +33,7 @@ def upgrade() -> None:
         sa.Column("description", sa.String(500), nullable=True),
         sa.Column("submitions", sa.Integer(), nullable=False, default=0),
         sa.Column("questions", JSONB(), nullable=False),
-        sa.Column("company_id", UUID(as_uuid=True)),
+        sa.Column("company_id", UUID(as_uuid=True), nullable=False),
         sa.ForeignKeyConstraint(["company_id"], ["company.id"], ondelete="CASCADE"),
     )
 

@@ -17,13 +17,12 @@ quiz_results_router = APIRouter(
 
 
 @quiz_results_router.post(
-    "/company/{company_id}/quiz/{quiz_id}/submit",
+    "/quiz/{quiz_id}/submit",
     response_model=QuizResultsGet,
     status_code=status.HTTP_200_OK,
 )
 async def submit_quiz_results(
     quiz_results: QuizResultsCreate,
-    company_id: UUID,
     quiz_id: UUID,
     user_id: UUID,
     session: AsyncSession = Depends(get_session),
@@ -35,7 +34,6 @@ async def submit_quiz_results(
         quiz_results=quiz_results,
         session=session,
         user=user,
-        company_id=company_id,
         quiz_id=quiz_id,
         user_id=user_id,
         redis_service=redis_service,
@@ -43,7 +41,7 @@ async def submit_quiz_results(
 
 
 @quiz_results_router.get(
-    "/company/{company_id}/avg_member_score", status_code=status.HTTP_200_OK
+    "/{company_id}/avg_member_score", status_code=status.HTTP_200_OK
 )
 async def get_avg_member_score(
     company_id: UUID,
