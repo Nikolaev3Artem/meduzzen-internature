@@ -38,7 +38,7 @@ async def quiz_get(
     user: User = Depends(get_active_user),
 ) -> QuizGet:
     return await quiz_service.quiz_get(
-        user=user, quiz_id=quiz_id, session=session, company_id=company_id
+        user=user, quiz_id=quiz_id, company_id=company_id, session=session
     )
 
 

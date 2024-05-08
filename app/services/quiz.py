@@ -37,7 +37,7 @@ class QuizService:
         self, quiz_id: UUID, session: AsyncSession, user: User, company_id: UUID
     ) -> QuizGet:
         return await self._repo.get_quiz(
-            quiz_id=quiz_id, session=session, company_id=company_id
+            quiz_id=quiz_id, company_id=company_id, session=session
         )
 
     async def quiz_get_list(
