@@ -19,3 +19,6 @@
 
 ## Docs:
 ### http://localhost/docs/ or http://127.0.0.1/docs/
+
+## AWS Deploy link:
+### http://54.89.70.13/docs/

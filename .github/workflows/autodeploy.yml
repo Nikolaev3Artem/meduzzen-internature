@@ -2,7 +2,7 @@ name: Build, Push, Deploy.
 
 on:
   push:
-    branches: [ BE-aws-structure ]
+    branches: [ BE-aws-structure, develop, main ]
 jobs:
   build_and_push:
     name: Push docker image to Docker Hub
