@@ -1,0 +1,77 @@
+name: Build, Push, Deploy.
+
+on:
+  push:
+    branches: [ BE-aws-structure ]
+jobs:
+  build_and_push:
+    name: Push docker image to Docker Hub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          ecr: auto
+          logout: true
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: itzmaze2/meduzzen-internature:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [ build_and_push ]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - run: |
+          echo "API_PORT"=${{ secrets.API_PORT }} >> .env
+          echo "API_HOST"=${{ secrets.API_HOST }} >> .env
+          echo "DEBUG"=${{ secrets.DEBUG }} >> .env
+          echo "origins"=${{ secrets.origins }} >> .env
+          echo "POSTGRES_USER"=${{ secrets.POSTGRES_USER }} >> .env
+          echo "POSTGRES_PASSWORD"=${{ secrets.POSTGRES_PASSWORD }} >> .env
+          echo "POSTGRES_DB"=${{ secrets.POSTGRES_DB }} >> .env
+          echo "POSTGRES_PORT"=${{ secrets.POSTGRES_PORT }} >> .env
+          echo "POSTGRES_HOST"=${{ secrets.POSTGRES_HOST }} >> .env
+          echo "POSTGRES_TEST_PORT"=${{ secrets.POSTGRES_TEST_PORT }} >> .env
+          echo "POSTGRES_TEST_HOST"=${{ secrets.POSTGRES_TEST_HOST }} >> .env
+          echo "POSTGRES_TEST_DB"=${{ secrets.POSTGRES_TEST_DB }} >> .env
+          echo "REDIS_PASSWORD"=${{ secrets.REDIS_PASSWORD }} >> .env
+          echo "REDIS_PORT"=${{ secrets.REDIS_PORT }} >> .env
+          echo "REDIS_DATABASES"=${{ secrets.REDIS_DATABASES }} >> .env
+          echo "REDIS_HOST"=${{ secrets.REDIS_HOST }} >> .env
+          echo "JWT_SECURITY_KEY"=${{ secrets.JWT_SECURITY_KEY }} >> .env
+          echo "JWT_ALGORITHM"=${{ secrets.JWT_ALGORITHM }} >> .env
+          echo "AUTH0_AUDIENCE"=${{ secrets.AUTH0_AUDIENCE }} >> .env
+          echo "AUTH0_ISSUER"=${{ secrets.AUTH0_ISSUER }} >> .env
+          echo "AUTH0_DOMAIN"=${{ secrets.AUTH0_DOMAIN }} >> .env
+          echo "AUTH0_ALGORITHM"=${{ secrets.AUTH0_ALGORITHM }} >> .env
+      - name: copy file via ssh key
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          source: "."
+          target: .
+
+      - name: run docker-compose
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          script: |
+            sudo docker-compose down
+            sudo docker rmi -f $(docker images -q)
+            sudo docker-compose pull
+            sudo docker-compose up -d
+            sudo docker-compose exec api alembic upgrade heads
